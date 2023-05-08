@@ -2,6 +2,6 @@ package com.riobener.sonicsoul.utils
 
 class Constants {
     companion object{
-        const val BASE_URL = "https://api.soundcloud.com/"
+        const val SPOTIFY_BASE_URL = "https://api.soundcloud.com/"
     }
 }

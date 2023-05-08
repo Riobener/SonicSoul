@@ -5,4 +5,6 @@
     <dimen name="music_details_playing_now">20sp</dimen>
     <dimen name="music_details_song_name">26sp</dimen>
     <dimen name="music_details_song_author">21sp</dimen>
+    <dimen name="side_menu_title">25sp</dimen>
+
 </resources>

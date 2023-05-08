@@ -1,0 +1,21 @@
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/online_music"
+        android:icon="@drawable/online_music"
+        android:title="@string/online_music"
+        />
+    <item
+        android:id="@+id/local_music"
+        android:icon="@drawable/local_music"
+        android:title="@string/local_music" />
+    <item
+        android:id="@+id/about"
+        android:icon="@drawable/about"
+        android:title="@string/about" />
+    <item
+        android:id="@+id/settings"
+        android:icon="@drawable/settings"
+        android:title="@string/settings"/>
+</menu>

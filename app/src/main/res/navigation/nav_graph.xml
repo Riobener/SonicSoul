@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/FirstFragment"
-        android:name="com.riobener.sonicsoul.FirstFragment"
+        android:name="com.riobener.sonicsoul.ui.FirstFragment"
         android:label="@string/first_fragment_label"
         tools:layout="@layout/fragment_first">
 
@@ -17,7 +17,7 @@
     </fragment>
     <fragment
         android:id="@+id/MusicDetails"
-        android:name="com.riobener.sonicsoul.MusicDetailsFragment"
+        android:name="com.riobener.sonicsoul.ui.MusicDetailsFragment"
         android:label="@string/second_fragment_label"
         tools:layout="@layout/music_details">
 

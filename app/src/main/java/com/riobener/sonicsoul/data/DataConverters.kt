@@ -1,7 +1,7 @@
 package com.riobener.sonicsoul.data
 
 import androidx.room.TypeConverter
-import com.riobener.sonicsoul.data.entity.ServiceName
+import com.riobener.sonicsoul.data.auth.ServiceName
 import java.util.*
 
 object DataConverters {
@@ -16,6 +16,4 @@ object DataConverters {
     fun toServiceName(value: String) = enumValueOf<ServiceName>(value)
     @TypeConverter
     fun fromServiceName(value: ServiceName) = value.name
-
-
 }

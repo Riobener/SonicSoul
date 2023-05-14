@@ -1,4 +1,4 @@
-package com.riobener.sonicsoul.data.entity
+package com.riobener.sonicsoul.data.auth
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
@@ -16,7 +16,11 @@ data class ServiceCredentials(
     var updatedAt: Long,
 ) {
     companion object {
-        fun create(serviceName: ServiceName, accessToken: String, refreshToken: String?): ServiceCredentials {
+        fun create(
+            serviceName: ServiceName,
+            accessToken: String,
+            refreshToken: String?
+        ): ServiceCredentials {
             return ServiceCredentials(
                 id = UUID.randomUUID(),
                 serviceName = serviceName,

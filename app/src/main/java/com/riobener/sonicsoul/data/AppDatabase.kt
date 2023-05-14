@@ -1,12 +1,10 @@
 package com.riobener.sonicsoul.data
 
-import android.content.Context
 import androidx.room.Database
-import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.riobener.sonicsoul.data.entity.ServiceCredentials
-import com.riobener.sonicsoul.data.entity.ServiceCredentialsDao
+import com.riobener.sonicsoul.data.auth.ServiceCredentials
+import com.riobener.sonicsoul.data.auth.ServiceCredentialsDao
 import com.riobener.sonicsoul.di.ApplicationScope
 import kotlinx.coroutines.CoroutineScope
 import javax.inject.Inject

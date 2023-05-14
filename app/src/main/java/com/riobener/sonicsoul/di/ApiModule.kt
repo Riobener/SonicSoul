@@ -1,6 +1,10 @@
 package com.riobener.sonicsoul.di
 
-import com.riobener.sonicsoul.utils.SpotifyConstants
+import com.riobener.sonicsoul.data.auth.ServiceCredentialsDao
+import com.riobener.sonicsoul.data.auth.ServiceCredentialsRepository
+import com.riobener.sonicsoul.data.auth.spotify.SpotifyAuthRepository
+import com.riobener.sonicsoul.utils.ServiceConfig
+import com.riobener.sonicsoul.utils.SpotifyConfig
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -29,10 +33,17 @@ object ApiModule {
 
     @Provides
     @Singleton
-    fun provideSpotifyRetrofit(): Retrofit =
+    fun provideRetrofit(serviceConfig: ServiceConfig): Retrofit =
         Retrofit.Builder()
-            .baseUrl(SpotifyConstants.BASE_URL)
+            .baseUrl(serviceConfig.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .client(okHttpClient())
             .build()
+
+/*    @Provides
+    fun provideSpotifyAuthRepository(
+        @Spotify serviceConfig: ServiceConfig,
+    ): SpotifyAuthRepository {
+        return SpotifyAuthRepository(serviceConfig)
+    }*/
 }

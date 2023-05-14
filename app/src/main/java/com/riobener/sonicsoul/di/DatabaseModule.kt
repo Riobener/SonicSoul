@@ -3,8 +3,10 @@ package com.riobener.sonicsoul.di
 import android.app.Application
 import androidx.room.Room
 import com.riobener.sonicsoul.data.AppDatabase
-import com.riobener.sonicsoul.data.entity.ServiceCredentialsDao
-import com.riobener.sonicsoul.data.repository.ServiceCredentialsRepository
+import com.riobener.sonicsoul.data.auth.ServiceCredentialsDao
+import com.riobener.sonicsoul.data.auth.ServiceCredentialsRepository
+import com.riobener.sonicsoul.data.auth.spotify.SpotifyAuthRepository
+import com.riobener.sonicsoul.utils.ServiceConfig
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -27,7 +29,14 @@ object DatabaseModule {
     }
 
     @Provides
-    fun provideServiceCredentialsRepository(dao: ServiceCredentialsDao): ServiceCredentialsRepository {
+    fun provideServiceCredentialsRepository(
+        dao: ServiceCredentialsDao,
+    ): ServiceCredentialsRepository {
         return ServiceCredentialsRepository(dao)
+    }
+
+    @Provides
+    fun provideSpotifyAuthRepository(serviceCredentialsRepository: ServiceCredentialsRepository): SpotifyAuthRepository {
+        return SpotifyAuthRepository(serviceCredentialsRepository)
     }
 }

@@ -39,6 +39,9 @@ class PlaylistFragment : Fragment() {
         binding.authButton.setOnClickListener {
             viewModel.openAuthPage()
         }
+        binding.musicButton.setOnClickListener {
+            viewModel.getSpotifyMusicList()
+        }
         viewModel.openAuthPageFlow.launchAndCollectIn(viewLifecycleOwner) {
             openAuthPage(it)
         }
@@ -46,7 +49,8 @@ class PlaylistFragment : Fragment() {
             toast(it)
         }
         viewModel.authSuccessFlow.launchAndCollectIn(viewLifecycleOwner) {
-            findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
+            viewModel.getSpotifyMusicList()
+            /*findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)*/
         }
         binding.buttonFirst.setOnClickListener {
             findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)

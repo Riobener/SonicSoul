@@ -11,6 +11,7 @@ import com.riobener.sonicsoul.data.auth.ServiceCredentials
 import com.riobener.sonicsoul.data.auth.ServiceCredentialsRepository
 import com.riobener.sonicsoul.data.auth.ServiceName
 import com.riobener.sonicsoul.data.auth.spotify.SpotifyAuthRepository
+import com.riobener.sonicsoul.data.auth.spotify.SpotifyMusicRepository
 import dagger.assisted.Assisted
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -32,6 +33,7 @@ class SpotifyViewModel @Inject constructor(
     private val state: SavedStateHandle,
     private val authRepository: SpotifyAuthRepository,
     private val serviceRepository: ServiceCredentialsRepository,
+    private val spotifyMusicRepository: SpotifyMusicRepository,
 ) : ViewModel() {
 
     private val authService: AuthorizationService = AuthorizationService(applicationContext)
@@ -52,6 +54,12 @@ class SpotifyViewModel @Inject constructor(
             val response = serviceRepository.findByServiceName(ServiceName.SPOTIFY)
             serviceCredentialsLiveData.postValue(response)
         }
+
+    fun getSpotifyMusicList() {
+        viewModelScope.launch {
+            Log.d("SPOTIFY MUSIC", spotifyMusicRepository.getTracks().toString())
+        }
+    }
 
     fun openAuthPage() {
         val customTabsIntent = CustomTabsIntent.Builder().build()

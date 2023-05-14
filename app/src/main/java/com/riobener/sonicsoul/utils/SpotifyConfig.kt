@@ -3,7 +3,7 @@ package com.riobener.sonicsoul.utils
 import com.riobener.sonicsoul.BuildConfig
 
 object SpotifyConfig : ServiceConfig {
-    override val BASE_URL: String = "https://api.soundcloud.com/"
+    override val BASE_URL: String = "https://api.spotify.com/v1/"
     override val REDIRECT_URI: String = "com.riobener.sonicsoul://spotifyauth"
     override val AUTHORIZE_URL: String = "https://accounts.spotify.com/authorize"
     override val TOKEN_URL: String = "https://accounts.spotify.com/api/token"

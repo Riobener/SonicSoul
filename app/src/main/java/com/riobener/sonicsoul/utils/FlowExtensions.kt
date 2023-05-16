@@ -10,7 +10,7 @@ import kotlinx.coroutines.launch
 
 inline fun <T> Flow<T>.launchAndCollectIn(
     owner: LifecycleOwner,
-    minActiveState: Lifecycle.State = Lifecycle.State.STARTED,
+    minActiveState: Lifecycle.State = Lifecycle.State.CREATED,
     crossinline action: suspend CoroutineScope.(T) -> Unit
 ) = owner.lifecycleScope.launch {
     owner.repeatOnLifecycle(minActiveState) {

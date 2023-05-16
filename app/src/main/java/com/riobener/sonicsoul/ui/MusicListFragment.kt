@@ -43,14 +43,11 @@ class MusicListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initAdapter(view)
+        initAdapter(binding.root)
+        processTokenExisting()
         viewModel.toastFlow.launchAndCollectIn(viewLifecycleOwner) {
             toast(it)
         }
-        processTokenExisting()
-/*        binding.buttonFirst.setOnClickListener {
-            findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
-        }*/
     }
 
     fun processAuth() {
@@ -115,13 +112,11 @@ class MusicListFragment : Fragment() {
 /*            val action = GamesListFragmentDirections.actionGamesListFragmentToGameDetailsFragment(it.id)
             Navigation.findNavController(view).navigate(action)*/
         }
-        val recycler = binding.musicList.apply {
+        binding.musicList.apply {
             adapter = musicAdapter
             layoutManager = LinearLayoutManager(activity)
         }
-        val recyclerViewState = recycler.layoutManager?.onSaveInstanceState()
-        musicAdapter.notifyDataSetChanged()
-        recycler.layoutManager?.onRestoreInstanceState(recyclerViewState)
+
     }
 
     private fun openAuthPage(intent: Intent) {

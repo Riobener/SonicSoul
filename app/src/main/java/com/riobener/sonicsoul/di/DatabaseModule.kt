@@ -5,14 +5,11 @@ import androidx.room.Room
 import com.riobener.sonicsoul.data.AppDatabase
 import com.riobener.sonicsoul.data.auth.ServiceCredentialsDao
 import com.riobener.sonicsoul.data.auth.ServiceCredentialsRepository
-import com.riobener.sonicsoul.data.auth.spotify.SpotifyApi
 import com.riobener.sonicsoul.data.auth.spotify.SpotifyAuthRepository
-import com.riobener.sonicsoul.utils.ServiceConfig
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import retrofit2.Retrofit
 import javax.inject.Singleton
 
 @Module

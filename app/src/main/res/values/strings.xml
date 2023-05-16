@@ -12,6 +12,10 @@
     <string name="title_activity_main2">MainActivity2</string>
     <string name="settings">Settings</string>
     <string name="about">About</string>
+    <string name="login_exception">Login exception</string>
+    <string name="music_load_exception">Music load exception</string>
     <string name="local_music">Local music</string>
     <string name="online_music">Online music</string>
+    <string name="need_authorize">You must be logged in \n to access online music</string>
+    <string name="login_text">Log in</string>
 </resources>

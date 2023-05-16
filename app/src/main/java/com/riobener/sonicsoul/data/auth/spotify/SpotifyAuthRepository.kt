@@ -27,7 +27,7 @@ class SpotifyAuthRepository @Inject constructor(
                 refreshToken = tokens.refreshToken
             )
         )
-        Log.d("OAuth", "6. Tokens accepted:\n access=${tokens.accessToken}\nrefresh=${tokens.refreshToken}")
+        Log.d("OAuth", "4. Tokens accepted:\n access=${tokens.accessToken}\nrefresh=${tokens.refreshToken}")
     }
 
     fun getAuthRequest(): AuthorizationRequest {

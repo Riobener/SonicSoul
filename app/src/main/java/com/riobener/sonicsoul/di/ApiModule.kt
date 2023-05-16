@@ -1,17 +1,11 @@
 package com.riobener.sonicsoul.di
 
 import android.content.Context
-import com.riobener.sonicsoul.data.auth.ServiceCredentials
-import com.riobener.sonicsoul.data.auth.ServiceCredentialsDao
 import com.riobener.sonicsoul.data.auth.ServiceCredentialsRepository
-import com.riobener.sonicsoul.data.auth.ServiceName
-import com.riobener.sonicsoul.data.auth.spotify.SpotifyApi
-import com.riobener.sonicsoul.data.auth.spotify.SpotifyAuthRepository
+import com.riobener.sonicsoul.data.music.spotify.SpotifyApi
 import com.riobener.sonicsoul.data.network.AuthorizationFailedInterceptor
 import com.riobener.sonicsoul.data.network.AuthorizationInterceptor
-import com.riobener.sonicsoul.utils.ServiceConfig
 import com.riobener.sonicsoul.utils.SpotifyConfig
-import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

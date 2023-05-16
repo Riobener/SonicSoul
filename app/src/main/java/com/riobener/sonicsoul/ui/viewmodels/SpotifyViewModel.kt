@@ -1,6 +1,5 @@
 package com.riobener.sonicsoul.ui.viewmodels
 
-import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.util.Log
@@ -11,8 +10,9 @@ import com.riobener.sonicsoul.data.auth.ServiceCredentials
 import com.riobener.sonicsoul.data.auth.ServiceCredentialsRepository
 import com.riobener.sonicsoul.data.auth.ServiceName
 import com.riobener.sonicsoul.data.auth.spotify.SpotifyAuthRepository
-import com.riobener.sonicsoul.data.auth.spotify.SpotifyMusicRepository
-import dagger.assisted.Assisted
+import com.riobener.sonicsoul.data.music.TrackInfo
+import com.riobener.sonicsoul.data.music.spotify.SpotifyMusicRepository
+import com.riobener.sonicsoul.data.music.spotify.SpotifyTrackResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.Channel
@@ -32,32 +32,55 @@ class SpotifyViewModel @Inject constructor(
     @ApplicationContext applicationContext: Context,
     private val state: SavedStateHandle,
     private val authRepository: SpotifyAuthRepository,
-    private val serviceRepository: ServiceCredentialsRepository,
+    private val serviceCredentialsRepository: ServiceCredentialsRepository,
     private val spotifyMusicRepository: SpotifyMusicRepository,
 ) : ViewModel() {
-
+    //Auth
     private val authService: AuthorizationService = AuthorizationService(applicationContext)
-
     private val openAuthPageEventChannel = Channel<Intent>(Channel.BUFFERED)
     private val toastEventChannel = Channel<Int>(Channel.BUFFERED)
     private val authSuccessEventChannel = Channel<Unit>(Channel.BUFFERED)
+    val openAuthPageFlow: Flow<Intent>
+        get() = openAuthPageEventChannel.receiveAsFlow()
+    val authSuccessFlow: Flow<Unit>
+        get() = authSuccessEventChannel.receiveAsFlow()
+    val toastFlow: Flow<Int>
+        get() = toastEventChannel.receiveAsFlow()
 
+    private val serviceCredentialsMutableStateFlow = MutableStateFlow<ServiceCredentials?>(null)
+    val serviceCredentialsFlow: Flow<ServiceCredentials?>
+        get() = serviceCredentialsMutableStateFlow.asStateFlow()
+
+
+    //Loading
     private val loadingMutableStateFlow = MutableStateFlow(false)
+    val loadingFlow: Flow<Boolean>
+        get() = loadingMutableStateFlow.asStateFlow()
 
-    private val serviceCredentialsLiveData: MutableLiveData<ServiceCredentials?> = MutableLiveData()
+    //Music
+    private val musicInfoMutableStateFlow = MutableStateFlow<List<TrackInfo>>(emptyList())
+    val musicInfoFlow: Flow<List<TrackInfo>>
+        get() = musicInfoMutableStateFlow.asStateFlow()
 
-    val serviceCredentials: LiveData<ServiceCredentials?>
-        get() = serviceCredentialsLiveData
-
-    fun getServiceCredentials() =
+    fun getServiceCredentials(){
         viewModelScope.launch {
-            val response = serviceRepository.findByServiceName(ServiceName.SPOTIFY)
-            serviceCredentialsLiveData.postValue(response)
+            serviceCredentialsMutableStateFlow.value = serviceCredentialsRepository.findByServiceName(ServiceName.SPOTIFY)
         }
+    }
 
-    fun getSpotifyMusicList() {
+    fun loadMusic() {
         viewModelScope.launch {
-            Log.d("SPOTIFY MUSIC", spotifyMusicRepository.getTracks().toString())
+            loadingMutableStateFlow.value = true
+            runCatching {
+                spotifyMusicRepository.getTracks()
+            }.onSuccess {
+                musicInfoMutableStateFlow.value = it
+                loadingMutableStateFlow.value = false
+            }.onFailure {
+                loadingMutableStateFlow.value = false
+                musicInfoMutableStateFlow.value = emptyList()
+                toastEventChannel.trySendBlocking(R.string.music_load_exception)
+            }
         }
     }
 
@@ -72,22 +95,8 @@ class SpotifyViewModel @Inject constructor(
         openAuthPageEventChannel.trySendBlocking(authPageIntent)
     }
 
-    val openAuthPageFlow: Flow<Intent>
-        get() = openAuthPageEventChannel.receiveAsFlow()
-
-    val loadingFlow: Flow<Boolean>
-        get() = loadingMutableStateFlow.asStateFlow()
-
-    val toastFlow: Flow<Int>
-        get() = toastEventChannel.receiveAsFlow()
-
-    val authSuccessFlow: Flow<Unit>
-        get() = authSuccessEventChannel.receiveAsFlow()
-
     fun onAuthCodeReceived(tokenRequest: TokenRequest) {
-
         Log.d("OAuth", "2. Received code = ${tokenRequest.authorizationCode}")
-
         viewModelScope.launch {
             loadingMutableStateFlow.value = true
             runCatching {
@@ -104,7 +113,7 @@ class SpotifyViewModel @Inject constructor(
                 authSuccessEventChannel.send(Unit)
             }.onFailure {
                 loadingMutableStateFlow.value = false
-                toastEventChannel.send(R.string.about)//TODO нормальное сообщение
+                toastEventChannel.send(R.string.login_exception)
             }
         }
     }

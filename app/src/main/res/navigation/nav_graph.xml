@@ -3,26 +3,24 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/FirstFragment">
+    app:startDestination="@id/music_list_fragment">
 
     <fragment
-        android:id="@+id/FirstFragment"
-        android:name="com.riobener.sonicsoul.ui.PlaylistFragment"
-        android:label="@string/first_fragment_label"
-        tools:layout="@layout/playlist_fragment">
-
+        android:id="@+id/music_list_fragment"
+        android:name="com.riobener.sonicsoul.ui.MusicListFragment"
+        android:label="MusicList"
+        tools:layout="@layout/music_list_fragment">
         <action
-            android:id="@+id/action_FirstFragment_to_SecondFragment"
+            android:id="@+id/action_MusicList_to_MusicDetails"
             app:destination="@id/MusicDetails" />
     </fragment>
     <fragment
         android:id="@+id/MusicDetails"
         android:name="com.riobener.sonicsoul.ui.MusicDetailsFragment"
-        android:label="@string/second_fragment_label"
+        android:label="MusicDetails"
         tools:layout="@layout/music_details">
-
         <action
-            android:id="@+id/action_MusicDetails_to_FirstFragment"
-            app:destination="@id/FirstFragment" />
+            android:id="@+id/action_MusicDetails_to_MusicList"
+            app:destination="@id/music_list_fragment" />
     </fragment>
 </navigation>

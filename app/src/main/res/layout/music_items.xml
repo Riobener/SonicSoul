@@ -9,9 +9,7 @@
         android:id="@+id/music_img"
         android:layout_width="45dp"
         android:layout_height="45dp"
-        android:layout_margin="10dp"
-        android:background="@drawable/ic_launcher_background"
-        android:padding="15dp" />
+        android:layout_margin="10dp" />
 
     <TextView
         android:id="@+id/music_title"
@@ -19,8 +17,11 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:layout_toEndOf="@id/music_img"
+        android:layout_toStartOf="@+id/music_options"
         android:text="Music title"
         android:textColor="@color/theme_white"
+        android:ellipsize="end"
+        android:maxLines="1"
         android:textSize="@dimen/music_item_title" />
 
     <TextView

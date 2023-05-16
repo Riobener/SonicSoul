@@ -9,9 +9,9 @@
     <color name="white">#FFFFFFFF</color>
 
 
-
-
+    <!--custom-->
     <color name="theme_black">#2C2C2C</color>
+    <color name="theme_gray">#3F3F3F</color>
     <color name="theme_white">#EAF0FF</color>
     <color name="theme_light">#A5C0FF</color>
 </resources>

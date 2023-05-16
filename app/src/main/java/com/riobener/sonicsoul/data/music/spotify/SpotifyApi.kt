@@ -1,4 +1,4 @@
-package com.riobener.sonicsoul.data.auth.spotify
+package com.riobener.sonicsoul.data.music.spotify
 
 import retrofit2.http.GET
 import retrofit2.http.Query

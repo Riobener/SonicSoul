@@ -34,7 +34,7 @@ class MusicDetailsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.backArrow.setOnClickListener {
-            findNavController().navigate(R.id.action_MusicDetails_to_FirstFragment)
+            findNavController().navigate(R.id.action_MusicDetails_to_MusicList)
         }
     }
 

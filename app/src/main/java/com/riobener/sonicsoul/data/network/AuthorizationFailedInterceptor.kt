@@ -40,47 +40,50 @@ class AuthorizationFailedInterceptor @Inject constructor(
     ): Response {
         val latch = getLatch()
         return when {
-            latch != null && latch.count > 0 -> handleTokenIsUpdating(chain, latch, requestTimestamp)
+            latch != null && latch.count > 0 -> handleTokenIsUpdating(chain, latch, requestTimestamp,originalResponse)
                 ?: originalResponse
-            tokenUpdateTime > requestTimestamp -> updateTokenAndProceedChain(chain)
-            else -> handleTokenNeedRefresh(chain) ?: originalResponse
+            tokenUpdateTime > requestTimestamp -> updateTokenAndProceedChain(chain,originalResponse)
+            else -> handleTokenNeedRefresh(chain,originalResponse) ?: originalResponse
         }
     }
 
     private fun handleTokenIsUpdating(
         chain: Interceptor.Chain,
         latch: CountDownLatch,
-        requestTimestamp: Long
+        requestTimestamp: Long,
+        oldResponse: Response,
     ): Response? {
         return if (latch.await(REQUEST_TIMEOUT, TimeUnit.SECONDS)
             && tokenUpdateTime > requestTimestamp
         ) {
-            updateTokenAndProceedChain(chain)
+            updateTokenAndProceedChain(chain,oldResponse)
         } else {
             null
         }
     }
 
     private fun handleTokenNeedRefresh(
-        chain: Interceptor.Chain
+        chain: Interceptor.Chain,
+        oldResponse: Response,
     ): Response? {
         return if (refreshToken()) {
-            updateTokenAndProceedChain(chain)
+            updateTokenAndProceedChain(chain,oldResponse)
         } else {
             null
         }
     }
 
     private fun updateTokenAndProceedChain(
-        chain: Interceptor.Chain
+        chain: Interceptor.Chain,
+        oldResponse: Response,
     ): Response {
+        oldResponse.close()
         val newRequest = updateOriginalCallWithNewToken(chain.request())
         return chain.proceed(newRequest)
     }
 
     private fun refreshToken(): Boolean {
         initLatch()
-
         val tokenRefreshed = runBlocking {
             runCatching {
                 val refreshRequest = AppAuth(SpotifyConfig).getRefreshTokenRequest(credentials?.refreshToken.orEmpty())
@@ -110,12 +113,23 @@ class AuthorizationFailedInterceptor @Inject constructor(
 
     private fun updateOriginalCallWithNewToken(request: Request): Request {
         return credentials?.accessToken?.let { newAccessToken ->
-            request
-                .newBuilder()
-                .header("Authorization", newAccessToken)
-                .build()
+            request.addTokenHeader(newAccessToken)
         } ?: request
     }
+
+
+    fun Request.addTokenHeader(token: String?): Request {
+        val authHeaderName = "Authorization"
+        return newBuilder()
+            .apply {
+                if (token != null) {
+                    header(authHeaderName, token.withBearer())
+                }
+            }
+            .build()
+    }
+
+    private fun String.withBearer() = "Bearer $this"
 
     companion object {
 

@@ -8,19 +8,13 @@
     <fragment
         android:id="@+id/music_list_fragment"
         android:name="com.riobener.sonicsoul.ui.MusicListFragment"
-        android:label="MusicList"
+        android:label="Online music"
         tools:layout="@layout/music_list_fragment">
-        <action
-            android:id="@+id/action_MusicList_to_MusicDetails"
-            app:destination="@id/MusicDetails" />
     </fragment>
     <fragment
         android:id="@+id/MusicDetails"
         android:name="com.riobener.sonicsoul.ui.MusicDetailsFragment"
-        android:label="MusicDetails"
+        android:label="Local music"
         tools:layout="@layout/music_details">
-        <action
-            android:id="@+id/action_MusicDetails_to_MusicList"
-            app:destination="@id/music_list_fragment" />
     </fragment>
 </navigation>

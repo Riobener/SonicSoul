@@ -6,5 +6,6 @@ fun Item.toTrackInfo() = TrackInfo(
     externalId = track.id,
     title = track.name,
     artistName = track.artists.joinToString(separator = ", ") { it.name },
-    imageSource = track.album.images.lastOrNull()?.url
+    imageSource = track.album.images.lastOrNull()?.url,
+    trackSource = track.url,
 )

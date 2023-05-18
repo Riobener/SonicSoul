@@ -43,6 +43,9 @@ interface ServiceCredentialsDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun save(serviceCredentials: ServiceCredentials)
 
+    @Query("DELETE FROM service_credentials WHERE service_name = :serviceName")
+    suspend fun deleteByServiceName(serviceName: String)
+
     @Query("SELECT * FROM service_credentials WHERE service_name = :serviceName")
     suspend fun findByServiceName(serviceName: String): ServiceCredentials?
 }

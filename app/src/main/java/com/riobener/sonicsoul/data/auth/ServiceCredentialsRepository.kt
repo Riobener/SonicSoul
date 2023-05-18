@@ -18,4 +18,8 @@ class ServiceCredentialsRepository
     suspend fun findByServiceName(serviceName: ServiceName): ServiceCredentials? {
         return serviceCredentialsDao.findByServiceName(serviceName = serviceName.name)
     }
+
+    suspend fun deleteByServiceName(serviceName: ServiceName) {
+        serviceCredentialsDao.deleteByServiceName(serviceName = serviceName.name)
+    }
 }

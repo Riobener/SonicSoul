@@ -20,7 +20,9 @@ data class Track(
     @SerializedName("album")
     val album: Album,
     @SerializedName("artists")
-    val artists: List<Artist>
+    val artists: List<Artist>,
+    @SerializedName("preview_url")
+    val url: String?,
 )
 
 data class Album(
@@ -34,7 +36,7 @@ data class Album(
 
 data class Image(
     @SerializedName("url")
-    val url: String,
+    val url: String?,
 )
 
 data class Artist(

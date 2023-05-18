@@ -105,8 +105,11 @@ class AuthorizationFailedInterceptor @Inject constructor(
         if (tokenRefreshed) {
             tokenUpdateTime = System.currentTimeMillis()
         } else {
-            // не удалось обновить токен, произвести логаут
-            Log.d("OAuth", "10. EXCEPTION")
+            // не удалось обновить токен, произвести очистку (logout)
+            runBlocking {
+                repository.deleteByServiceName(ServiceName.SPOTIFY)
+                Log.e("OAuth", "Seems like refresh token died")
+            }
         }
         getLatch()?.countDown()
         return tokenRefreshed

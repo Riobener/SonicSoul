@@ -5,4 +5,5 @@ data class TrackInfo(
     val title: String,
     val artistName: String,
     val imageSource: String?,
+    val trackSource: String?,
 )

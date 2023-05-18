@@ -27,10 +27,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
-/*        binding.drawerButton.setOnClickListener {
-            binding.drawerLayout.openDrawer(GravityCompat.START)
-        }*/
         setContentView(binding.root)
+
         val controller = Navigation.findNavController(nav_host_fragment_content_main.requireView())
         val appBarConfiguration = AppBarConfiguration(setOf(R.id.music_list_fragment, R.id.MusicDetails), binding.drawerLayout)
         binding.navigationLayout.setupWithNavController(controller)

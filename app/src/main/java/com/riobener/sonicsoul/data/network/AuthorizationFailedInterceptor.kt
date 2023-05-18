@@ -97,6 +97,7 @@ class AuthorizationFailedInterceptor @Inject constructor(
                             refreshToken = tokens.refreshToken
                         )
                     )
+                    credentials?.accessToken = tokens.accessToken
                     true
                 } ?: false
         }
@@ -112,8 +113,8 @@ class AuthorizationFailedInterceptor @Inject constructor(
     }
 
     private fun updateOriginalCallWithNewToken(request: Request): Request {
-        return credentials?.accessToken?.let { newAccessToken ->
-            request.addTokenHeader(newAccessToken)
+        return credentials?.let{ creds ->
+            request.addTokenHeader(creds.accessToken)
         } ?: request
     }
 

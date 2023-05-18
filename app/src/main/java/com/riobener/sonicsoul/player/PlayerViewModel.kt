@@ -51,7 +51,6 @@ class PlayerViewModel @Inject constructor(
             override fun onPositionDiscontinuity(reason: Int) {
                 // Update the current position when the track changes
                 _currentPosition.value = exoPlayer.currentPosition
-                checkForNextTrack()
             }
 
             override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
@@ -86,7 +85,7 @@ class PlayerViewModel @Inject constructor(
         _isPlaying.value = false
     }
 
-    fun chooseTrack(trackInfo: TrackInfo) {
+    fun chooseAndPlayTrack(trackInfo: TrackInfo) {
         val index = playlist.indexOf(trackInfo)
         currentTrackIndex = index
         val mediaSource = trackToMediaSource(playlist[currentTrackIndex])
@@ -97,18 +96,19 @@ class PlayerViewModel @Inject constructor(
 
     fun playNextTrack() {
         // Increment the track index
+        if (currentMediaSource == null) return
         currentTrackIndex++
-        if (currentTrackIndex < playlist.size) {
+        if (currentTrackIndex >= playlist.size - 1 && exoPlayer.playbackState == ExoPlayer.STATE_ENDED) {
+            // The last track in the playlist has ended, stop playback
+            currentTrackIndex = 0
             val mediaSource = trackToMediaSource(playlist[currentTrackIndex])
             exoPlayer.prepare(mediaSource)
             currentMediaSource = mediaSource
-        } else {
-            // End of the playlist, stop playback
-            exoPlayer.stop()
-            currentMediaSource = null
-            currentTrackIndex = -1
-            _currentTrack.value = null
         }
+        val mediaSource = trackToMediaSource(playlist[currentTrackIndex])
+        exoPlayer.prepare(mediaSource)
+        currentMediaSource = mediaSource
+        play()
     }
 
     fun playPreviousTrack() {
@@ -120,25 +120,7 @@ class PlayerViewModel @Inject constructor(
         val mediaSource = trackToMediaSource(playlist[currentTrackIndex])
         exoPlayer.prepare(mediaSource)
         currentMediaSource = mediaSource
-    }
-
-    private fun checkForNextTrack() {
-        if (currentMediaSource == null) return
-        val totalTracks = playlist.size
-        if (currentTrackIndex >= totalTracks - 1 && exoPlayer.playbackState == ExoPlayer.STATE_ENDED) {
-            // The last track in the playlist has ended, stop playback
-            if (isLooping.value) {
-                currentTrackIndex = 0
-                val mediaSource = trackToMediaSource(playlist[currentTrackIndex])
-                exoPlayer.prepare(mediaSource)
-                currentMediaSource = mediaSource
-            } else {
-                exoPlayer.stop()
-                currentMediaSource = null
-                currentTrackIndex = -1
-                _currentTrack.value = null
-            }
-        }
+        play()
     }
 
     fun setLooping(looping: Boolean) {

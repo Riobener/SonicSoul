@@ -4,15 +4,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.riobener.sonicsoul.R
-import com.riobener.sonicsoul.databinding.ActivityMainBinding
 import com.riobener.sonicsoul.databinding.MusicListFragmentBinding
 import com.riobener.sonicsoul.player.PlayerViewModel
 import com.riobener.sonicsoul.ui.adapters.MusicAdapter
@@ -21,7 +16,6 @@ import com.riobener.sonicsoul.utils.launchAndCollectIn
 import com.riobener.sonicsoul.utils.toast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.music_list_fragment.*
-import kotlinx.coroutines.launch
 import net.openid.appauth.*
 
 @AndroidEntryPoint
@@ -114,7 +108,7 @@ class MusicListFragment : Fragment() {
     private fun initAdapter(view: View) {
         musicAdapter = MusicAdapter()
         musicAdapter.onItemClick = {
-            playerViewModel.chooseTrack(it)
+            playerViewModel.chooseAndPlayTrack(it)
         }
         binding.musicList.apply {
             adapter = musicAdapter

@@ -1,6 +1,7 @@
 package com.riobener.sonicsoul.player
 
 import android.content.Context
+import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.google.android.exoplayer2.ExoPlayer
@@ -9,6 +10,7 @@ import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
+import com.riobener.sonicsoul.data.music.TrackInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,10 +22,11 @@ class PlayerViewModel @Inject constructor(
     @ApplicationContext applicationContext: Context,
     private val state: SavedStateHandle,
     private val exoPlayer: SimpleExoPlayer,
+    private val mediaSourceFactory: ProgressiveMediaSource.Factory
 ) : ViewModel() {
 
-    private val _currentTrack: MutableStateFlow<String?> = MutableStateFlow(null)
-    val currentTrack: StateFlow<String?> = _currentTrack
+    private val _currentTrack: MutableStateFlow<TrackInfo?> = MutableStateFlow(null)
+    val currentTrack: StateFlow<TrackInfo?> = _currentTrack
 
     private val _currentPosition: MutableStateFlow<Long> = MutableStateFlow(0)
     val currentPosition: StateFlow<Long> = _currentPosition
@@ -40,7 +43,7 @@ class PlayerViewModel @Inject constructor(
 
     private var currentMediaSource: MediaSource? = null
 
-    private val playlist: MutableList<MediaSource> = mutableListOf()
+    private val playlist: MutableList<TrackInfo> = mutableListOf()
     private var currentTrackIndex: Int = -1
 
     init {
@@ -75,7 +78,6 @@ class PlayerViewModel @Inject constructor(
             exoPlayer.seekToDefaultPosition()
         }
         exoPlayer.playWhenReady = true
-        exoPlayer.repeatMode
         _isPlaying.value = exoPlayer.playWhenReady
     }
 
@@ -84,20 +86,20 @@ class PlayerViewModel @Inject constructor(
         _isPlaying.value = false
     }
 
-    fun chooseTrack(index: Int) {
-        if (index in 0 until playlist.size) {
-            currentTrackIndex = index
-            val mediaSource = playlist[currentTrackIndex]
-            exoPlayer.prepare(mediaSource)
-            currentMediaSource = mediaSource
-        }
+    fun chooseTrack(trackInfo: TrackInfo) {
+        val index = playlist.indexOf(trackInfo)
+        currentTrackIndex = index
+        val mediaSource = trackToMediaSource(playlist[currentTrackIndex])
+        exoPlayer.prepare(mediaSource)
+        currentMediaSource = mediaSource
+        play()
     }
 
     fun playNextTrack() {
         // Increment the track index
         currentTrackIndex++
         if (currentTrackIndex < playlist.size) {
-            val mediaSource = playlist[currentTrackIndex]
+            val mediaSource = trackToMediaSource(playlist[currentTrackIndex])
             exoPlayer.prepare(mediaSource)
             currentMediaSource = mediaSource
         } else {
@@ -115,7 +117,7 @@ class PlayerViewModel @Inject constructor(
         if (currentTrackIndex < 0) {
             currentTrackIndex = playlist.size - 1
         }
-        val mediaSource = playlist[currentTrackIndex]
+        val mediaSource = trackToMediaSource(playlist[currentTrackIndex])
         exoPlayer.prepare(mediaSource)
         currentMediaSource = mediaSource
     }
@@ -127,7 +129,7 @@ class PlayerViewModel @Inject constructor(
             // The last track in the playlist has ended, stop playback
             if (isLooping.value) {
                 currentTrackIndex = 0
-                val mediaSource = playlist[currentTrackIndex]
+                val mediaSource = trackToMediaSource(playlist[currentTrackIndex])
                 exoPlayer.prepare(mediaSource)
                 currentMediaSource = mediaSource
             } else {
@@ -143,10 +145,14 @@ class PlayerViewModel @Inject constructor(
         _isLooping.value = looping
     }
 
-    fun setPlaylist(newPlaylist: List<MediaSource>) {
+    fun setPlaylist(newPlaylist: List<TrackInfo>) {
         playlist.clear()
         playlist.addAll(newPlaylist)
         currentTrackIndex = -1
+    }
+
+    fun trackToMediaSource(trackInfo: TrackInfo): MediaSource {
+        return mediaSourceFactory.createMediaSource(Uri.parse(trackInfo.trackSource))
     }
 
     override fun onCleared() {

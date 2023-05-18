@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.riobener.sonicsoul.R
 import com.riobener.sonicsoul.databinding.ActivityMainBinding
 import com.riobener.sonicsoul.databinding.MusicListFragmentBinding
+import com.riobener.sonicsoul.player.PlayerViewModel
 import com.riobener.sonicsoul.ui.adapters.MusicAdapter
 import com.riobener.sonicsoul.ui.viewmodels.SpotifyViewModel
 import com.riobener.sonicsoul.utils.launchAndCollectIn
@@ -31,6 +32,7 @@ class MusicListFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel by viewModels<SpotifyViewModel>()
+    private val playerViewModel by viewModels<PlayerViewModel>()
 
     private lateinit var musicAdapter: MusicAdapter
 
@@ -70,7 +72,9 @@ class MusicListFragment : Fragment() {
         binding.loginButton.isEnabled = false
         viewModel.loadMusic()
         viewModel.musicInfoFlow.launchAndCollectIn(viewLifecycleOwner) { music ->
-            musicAdapter.differ.submitList(music)
+            val musicList = music.filter { it.trackSource != null }
+            musicAdapter.differ.submitList(musicList)
+            playerViewModel.setPlaylist(musicList)
         }
     }
 
@@ -110,8 +114,7 @@ class MusicListFragment : Fragment() {
     private fun initAdapter(view: View) {
         musicAdapter = MusicAdapter()
         musicAdapter.onItemClick = {
-/*            val action = GamesListFragmentDirections.actionGamesListFragmentToGameDetailsFragment(it.id)
-            Navigation.findNavController(view).navigate(action)*/
+            playerViewModel.chooseTrack(it)
         }
         binding.musicList.apply {
             adapter = musicAdapter

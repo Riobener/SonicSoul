@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import android.widget.RelativeLayout
 import android.widget.SeekBar
@@ -44,6 +45,7 @@ class MusicPlayerFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        (activity as AppCompatActivity).supportActionBar!!.hide()
         playerViewModel.currentTrack.launchAndCollectIn(this) {
             it?.let { currentTrack ->
                 setupTrackInfo(currentTrack)
@@ -93,44 +95,8 @@ class MusicPlayerFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
+    override fun onDetach() {
+        super.onDetach()
+    }
 }
-
-
-/*
-@AndroidEntryPoint
-class MusicPlayerActivity : AppCompatActivity() {
-
-    private lateinit var binding: MusicPlayerBinding
-    private val playerViewModel by viewModels<PlayerViewModel>()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = MusicPlayerBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        playerViewModel.currentTrack.launchAndCollectIn(this) {
-            it?.let { currentTrack ->
-                setupTrackInfo(currentTrack)
-            }
-        }
-        playerViewModel.trackDuration.launchAndCollectIn(this) {
-            val seconds = ((it / 1000) % 60).toInt()
-            binding.songProgress.max = seconds
-            binding.songDurationTotal.text = seconds.toString()
-        }
-        playerViewModel.currentPosition.launchAndCollectIn(this) {
-            val seconds = ((it / 1000) % 60).toInt()
-            binding.songProgress.progress = seconds
-            binding.songDurationPlayed.text = seconds.toString()
-        }
-    }
-
-    private fun setupTrackInfo(currentTrack: TrackInfo){
-        currentTrack.bigImageSource?.let{ image ->
-            Glide.with(this).load(image).into(binding.songCardImage)
-            binding.songCardImage.clipToOutline = true
-        }
-        binding.songName.text = currentTrack.title
-        binding.songAuthor.text = currentTrack.artistName
-    }
-
-}*/

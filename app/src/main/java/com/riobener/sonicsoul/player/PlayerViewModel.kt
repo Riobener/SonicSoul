@@ -51,7 +51,6 @@ class PlayerViewModel @Inject constructor(
     private val _isLooping: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val isLooping: StateFlow<Boolean> = _isLooping
 
-
     private var currentMediaSource: MediaSource? = null
 
     private val playlist: MutableList<TrackInfo> = mutableListOf()

@@ -7,7 +7,7 @@
         android:title="@string/online_music"
         />
     <item
-        android:id="@+id/MusicDetails"
+        android:id="@+id/MusicPlayer"
         android:icon="@drawable/local_music"
         android:title="@string/local_music" />
     <item

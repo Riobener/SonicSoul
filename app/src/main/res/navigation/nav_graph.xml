@@ -21,6 +21,8 @@
         tools:layout="@layout/music_player">
         <action
             android:id="@+id/action_MusicPlayer_to_MusicList"
-            app:destination="@id/MusicList" />
+            app:destination="@id/MusicList"
+            app:popUpTo="@+id/MusicPlayer"
+            app:popUpToInclusive="true"/>
     </fragment>
 </navigation>

@@ -50,10 +50,10 @@ class MusicListFragment : Fragment() {
             (it as AppCompatActivity).supportActionBar?.show()
         }
         initAdapter(binding.root)
-        if (!viewModel.alreadyLoaded) {
-            processTokenExisting()
-        } else {
+        if (viewModel.alreadyLoaded) {
             fillMusicContent(music = playerViewModel.getPlaylist())
+        } else {
+            processTokenExisting()
         }
         viewModel.toastFlow.launchAndCollectIn(viewLifecycleOwner) {
             toast(it)
@@ -84,9 +84,11 @@ class MusicListFragment : Fragment() {
     }
 
     fun fillMusicContent(music: List<TrackInfo>) {
+        music.forEach { Log.d("TRACK123", it.isPlaying.toString()) }
         val musicList = music.filter { it.trackSource != null }
         musicAdapter.differ.submitList(musicList)
         playerViewModel.setPlaylist(musicList)
+        musicAdapter.notifyDataSetChanged()
     }
 
     private fun processTokenExisting() {
@@ -133,14 +135,16 @@ class MusicListFragment : Fragment() {
             adapter = musicAdapter
             layoutManager = LinearLayoutManager(activity)
         }
-        playerViewModel.isPlaying.launchAndCollectIn(viewLifecycleOwner) {
-            playerViewModel.currentTrack.value?.let { currentTrack ->
+        playerViewModel.currentTrack.launchAndCollectIn(viewLifecycleOwner) { currentTrack ->
+            currentTrack?.let {
                 val currentIndex = musicAdapter.differ.currentList.indexOf(currentTrack)
                 musicAdapter.differ.currentList[currentIndex].isPlaying = currentTrack.isPlaying
-                playerViewModel.previousTrack.value?.let { previous ->
-                    val lastIndex = musicAdapter.differ.currentList.indexOf(previous)
-                    musicAdapter.differ.currentList[lastIndex].isPlaying = previous.isPlaying
-                }
+                musicAdapter.differ.currentList.forEach { Log.d("LIST1", it.isPlaying.toString()) }
+            }
+            playerViewModel.previousTrack.value?.let { previous ->
+                val lastIndex = musicAdapter.differ.currentList.indexOf(previous)
+                musicAdapter.differ.currentList[lastIndex].isPlaying = previous.isPlaying
+                musicAdapter.differ.currentList.forEach { Log.d("LIST2", it.isPlaying.toString()) }
             }
             musicAdapter.notifyDataSetChanged()
         }

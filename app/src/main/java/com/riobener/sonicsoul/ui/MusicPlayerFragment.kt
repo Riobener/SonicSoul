@@ -17,6 +17,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.riobener.sonicsoul.R
 import com.riobener.sonicsoul.data.music.TrackInfo
 import com.riobener.sonicsoul.databinding.MusicPlayerBinding
 import com.riobener.sonicsoul.player.PlayerViewModel
@@ -68,10 +69,20 @@ class MusicPlayerFragment : Fragment() {
         binding.songNext.setOnClickListener {
             playerViewModel.playNextTrack()
         }
-        binding.songProgress.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
+        playerViewModel.isPlaying.launchAndCollectIn(this) { isPlaying ->
+            if (isPlaying) {
+                binding.songPlayPause.setImageResource(R.drawable.pause_button)
+            } else {
+                binding.songPlayPause.setImageResource(R.drawable.play_button)
+            }
+        }
+        binding.songPlayPause.setOnClickListener {
+            playerViewModel.currentTrack.value?.let { currentTrack -> playerViewModel.chooseAndPlayTrack(currentTrack) }
+        }
+        binding.songProgress.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                if(progressBarFlag)
-                playerViewModel.changeTrackProgress((progress * 1000).toLong())
+                if (progressBarFlag)
+                    playerViewModel.changeTrackProgress((progress * 1000).toLong())
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {
@@ -84,8 +95,8 @@ class MusicPlayerFragment : Fragment() {
         })
     }
 
-    private fun setupTrackInfo(currentTrack: TrackInfo){
-        currentTrack.bigImageSource?.let{ image ->
+    private fun setupTrackInfo(currentTrack: TrackInfo) {
+        currentTrack.bigImageSource?.let { image ->
             Glide.with(this).load(image).into(song_card_image)
         }
         binding.songName.text = currentTrack.title
@@ -97,7 +108,4 @@ class MusicPlayerFragment : Fragment() {
         _binding = null
     }
 
-    override fun onDetach() {
-        super.onDetach()
-    }
 }

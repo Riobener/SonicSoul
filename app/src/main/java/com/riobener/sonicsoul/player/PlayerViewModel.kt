@@ -97,7 +97,7 @@ class PlayerViewModel @Inject constructor(
             while (true) {
                 Log.d("Player duration (ms): ", exoPlayer.currentPosition.toString())
                 _currentPosition.value = exoPlayer.currentPosition
-                delay(1000) // Delay for 1 second
+                delay(1000)
             }
         }
     }
@@ -110,19 +110,14 @@ class PlayerViewModel @Inject constructor(
         viewModelScope.coroutineContext.cancelChildren()
     }
 
-    fun play() {
+    private fun play() {
         startPlayback()
-/*        if (exoPlayer.playbackState == SimpleExoPlayer.STATE_ENDED) {
-            // Restart the playback from the beginning
-            exoPlayer.seekToDefaultPosition()
-        }*/
         exoPlayer.playWhenReady = true
         _isPlaying.value = exoPlayer.playWhenReady
         playlist[currentTrackIndex].isPlaying = true
-        setCurrentTrack()
     }
 
-    fun pause() {
+    private fun pause() {
         stopPlayback()
         exoPlayer.playWhenReady = false
         _isPlaying.value = false
@@ -149,10 +144,10 @@ class PlayerViewModel @Inject constructor(
             currentMediaSource = mediaSource
             play()
         }
+        setCurrentTrack()
     }
 
     fun playNextTrack() {
-        // Increment the track index
         if (currentMediaSource == null) return
         stopPlayback()
         if (currentTrackIndex != -1){
@@ -160,12 +155,8 @@ class PlayerViewModel @Inject constructor(
             _previousTrack.value = playlist[currentTrackIndex]
         }
         currentTrackIndex++
-        if (currentTrackIndex >= playlist.size - 1 && exoPlayer.playbackState == ExoPlayer.STATE_ENDED) {
-            // The last track in the playlist has ended, stop playback
+        if (currentTrackIndex > playlist.size - 1) {
             currentTrackIndex = 0
-            val mediaSource = trackToMediaSource(playlist[currentTrackIndex])
-            exoPlayer.prepare(mediaSource)
-            currentMediaSource = mediaSource
         }
         val mediaSource = trackToMediaSource(playlist[currentTrackIndex])
         exoPlayer.prepare(mediaSource)
@@ -175,7 +166,6 @@ class PlayerViewModel @Inject constructor(
     }
 
     fun playPreviousTrack() {
-        // Decrement the track index
         stopPlayback()
         if (currentTrackIndex != -1){
             playlist[currentTrackIndex].isPlaying = false
@@ -189,6 +179,7 @@ class PlayerViewModel @Inject constructor(
         exoPlayer.prepare(mediaSource)
         currentMediaSource = mediaSource
         play()
+        setCurrentTrack()
     }
 
     fun setLooping(looping: Boolean) {

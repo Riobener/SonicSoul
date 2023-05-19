@@ -7,4 +7,9 @@
     <dimen name="music_details_song_author">21sp</dimen>
     <dimen name="side_menu_title">25sp</dimen>
     <dimen name="button_text_size">15sp</dimen>
+    <dimen name="mini_player_controls">35dp</dimen>
+    <dimen name="mini_player_controls_margin_between">6dp</dimen>
+    <dimen name="player_controls">50dp</dimen>
+    <dimen name="player_controls_margin_between">30dp</dimen>
+
 </resources>

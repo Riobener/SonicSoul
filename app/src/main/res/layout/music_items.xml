@@ -45,6 +45,8 @@
         android:layout_toStartOf="@+id/music_options"
         android:text="Author"
         android:textColor="@color/theme_light"
+        android:ellipsize="end"
+        android:maxLines="1"
         android:textSize="@dimen/music_item_author" />
 
     <ImageButton

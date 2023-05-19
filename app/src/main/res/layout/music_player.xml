@@ -69,11 +69,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/song_card_container"
+        android:ellipsize="marquee"
+        android:marqueeRepeatLimit="marquee_forever"
         android:gravity="center_horizontal"
         android:text="Song name"
         android:textColor="@color/theme_white"
-        android:ellipsize="end"
-        android:maxLines="1"
         android:textSize="@dimen/music_details_song_name" />
 
     <TextView
@@ -81,9 +81,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/song_name"
-        android:ellipsize="end"
+        android:ellipsize="marquee"
+        android:marqueeRepeatLimit="marquee_forever"
         android:gravity="center_horizontal"
-        android:maxLines="@integer/material_motion_duration_long_1"
         android:text="Author"
         android:textColor="@color/theme_light"
         android:textSize="@dimen/music_details_song_author" />
@@ -104,8 +104,8 @@
 
             <ImageButton
                 android:id="@+id/song_back"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="@dimen/player_controls"
+                android:layout_height="@dimen/player_controls"
                 android:background="?attr/selectableItemBackground"
                 android:src="@drawable/previous_button"
                 app:tint="@color/theme_white"
@@ -114,10 +114,10 @@
 
             <ImageButton
                 android:id="@+id/song_play_pause"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginLeft="30dp"
-                android:layout_marginRight="30dp"
+                android:layout_width="@dimen/player_controls"
+                android:layout_height="@dimen/player_controls"
+                android:layout_marginLeft="@dimen/player_controls_margin_between"
+                android:layout_marginRight="@dimen/player_controls_margin_between"
                 android:background="?attr/selectableItemBackground"
                 android:gravity="center_horizontal"
                 android:src="@drawable/play_button"
@@ -127,8 +127,8 @@
 
             <ImageButton
                 android:id="@+id/song_next"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="@dimen/player_controls"
+                android:layout_height="@dimen/player_controls"
                 android:background="?attr/selectableItemBackground"
                 android:src="@drawable/next_button"
                 app:tint="@color/theme_white"

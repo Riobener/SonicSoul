@@ -1,9 +1,7 @@
 package com.riobener.sonicsoul.ui
 
 import android.content.Intent
-import android.media.MediaPlayer
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -13,6 +11,8 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
+import com.riobener.sonicsoul.R
 import com.riobener.sonicsoul.data.music.TrackInfo
 import com.riobener.sonicsoul.databinding.MusicListFragmentBinding
 import com.riobener.sonicsoul.player.PlayerViewModel
@@ -22,6 +22,8 @@ import com.riobener.sonicsoul.utils.launchAndCollectIn
 import com.riobener.sonicsoul.utils.toast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.music_list_fragment.*
+import kotlinx.android.synthetic.main.music_player.*
+import kotlinx.android.synthetic.main.music_player_mini.*
 import net.openid.appauth.*
 
 @AndroidEntryPoint
@@ -50,13 +52,14 @@ class MusicListFragment : Fragment() {
             (it as AppCompatActivity).supportActionBar?.show()
         }
         initAdapter(binding.root)
+        setupMiniPlayer()
+        viewModel.toastFlow.launchAndCollectIn(viewLifecycleOwner) {
+            toast(it)
+        }
         if (viewModel.alreadyLoaded) {
             fillMusicContent(music = playerViewModel.getPlaylist())
         } else {
             processTokenExisting()
-        }
-        viewModel.toastFlow.launchAndCollectIn(viewLifecycleOwner) {
-            toast(it)
         }
     }
 
@@ -84,11 +87,45 @@ class MusicListFragment : Fragment() {
     }
 
     fun fillMusicContent(music: List<TrackInfo>) {
-        music.forEach { Log.d("TRACK123", it.isPlaying.toString()) }
         val musicList = music.filter { it.trackSource != null }
         musicAdapter.differ.submitList(musicList)
         playerViewModel.setPlaylist(musicList)
         musicAdapter.notifyDataSetChanged()
+    }
+
+    fun setupMiniPlayer() {
+        playerViewModel.currentTrack.launchAndCollectIn(viewLifecycleOwner) { currentTrack ->
+            if (currentTrack != null) {
+                binding.miniPlayer.miniPlayerLayout.visibility = View.VISIBLE
+                currentTrack.imageSource?.let { image ->
+                    Glide.with(this@MusicListFragment).load(image).into(binding.miniPlayer.miniPlayerMusicImg)
+                }
+                binding.miniPlayer.miniMusicTitle.text = currentTrack.title
+                binding.miniPlayer.miniMusicAuthor.text = currentTrack.artistName
+            } else {
+                binding.miniPlayer.miniPlayerLayout.visibility = View.GONE
+            }
+        }
+        binding.miniPlayer.miniSongBack.setOnClickListener {
+            playerViewModel.playPreviousTrack()
+        }
+        binding.miniPlayer.miniSongNext.setOnClickListener {
+            playerViewModel.playNextTrack()
+        }
+        binding.miniPlayer.miniSongPlayPause.setOnClickListener {
+            playerViewModel.currentTrack.value?.let { currentTrack -> playerViewModel.chooseAndPlayTrack(currentTrack) }
+        }
+        playerViewModel.isPlaying.launchAndCollectIn(viewLifecycleOwner) { isPlaying ->
+            if (isPlaying) {
+                binding.miniPlayer.miniSongPlayPause.setImageResource(R.drawable.pause_button)
+            } else {
+                binding.miniPlayer.miniSongPlayPause.setImageResource(R.drawable.play_button)
+            }
+        }
+        binding.miniPlayer.miniPlayerLayout.setOnClickListener {
+            val action = MusicListFragmentDirections.actionMusicListToMusicPlayer()
+            Navigation.findNavController(it).navigate(action)
+        }
     }
 
     private fun processTokenExisting() {
@@ -128,8 +165,6 @@ class MusicListFragment : Fragment() {
         musicAdapter = MusicAdapter()
         musicAdapter.onItemClick = {
             playerViewModel.chooseAndPlayTrack(it)
-            val action = MusicListFragmentDirections.actionMusicListToMusicPlayer()
-            Navigation.findNavController(view).navigate(action)
         }
         binding.musicList.apply {
             adapter = musicAdapter
@@ -139,12 +174,10 @@ class MusicListFragment : Fragment() {
             currentTrack?.let {
                 val currentIndex = musicAdapter.differ.currentList.indexOf(currentTrack)
                 musicAdapter.differ.currentList[currentIndex].isPlaying = currentTrack.isPlaying
-                musicAdapter.differ.currentList.forEach { Log.d("LIST1", it.isPlaying.toString()) }
             }
             playerViewModel.previousTrack.value?.let { previous ->
                 val lastIndex = musicAdapter.differ.currentList.indexOf(previous)
                 musicAdapter.differ.currentList[lastIndex].isPlaying = previous.isPlaying
-                musicAdapter.differ.currentList.forEach { Log.d("LIST2", it.isPlaying.toString()) }
             }
             musicAdapter.notifyDataSetChanged()
         }

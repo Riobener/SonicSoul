@@ -1,22 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-<RelativeLayout
-    android:id="@+id/bottom_music_details"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/theme_gray"
-    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+    android:layout_height="wrap_content"
+    android:background="@drawable/header_toolbar"
+    android:id="@+id/mini_player_layout">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/need_authorize"
-            android:textColor="@color/theme_white"
-            android:textSize="20dp" />
+    <ImageView
+        android:id="@+id/mini_player_music_img"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_margin="10dp"/>
+
+    <TextView
+        android:id="@+id/mini_music_author"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_toStartOf="@+id/mini_controls_layout"
+        android:layout_toEndOf="@id/mini_player_music_img"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="Author"
+        android:textColor="@color/theme_white"
+        android:textSize="@dimen/music_item_title" />
+
+    <TextView
+        android:id="@+id/mini_music_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/mini_player_music_img"
+        android:layout_toStartOf="@+id/mini_controls_layout"
+        android:layout_toEndOf="@id/mini_player_music_img"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="Music Title"
+        android:textColor="@color/theme_light"
+        android:textSize="@dimen/music_item_author" />
+
+    <LinearLayout
+        android:id="@+id/mini_controls_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="15dp">
+
+        <ImageButton
+            android:id="@+id/mini_song_back"
+            android:layout_width="@dimen/mini_player_controls"
+            android:layout_height="@dimen/mini_player_controls"
+            android:adjustViewBounds="true"
+            android:background="?attr/selectableItemBackground"
+            android:scaleType="fitXY"
+            android:src="@drawable/previous_button"
+            app:tint="@color/theme_white" />
+
+        <ImageButton
+            android:id="@+id/mini_song_play_pause"
+            android:layout_width="@dimen/mini_player_controls"
+            android:layout_height="@dimen/mini_player_controls"
+            android:layout_marginLeft="@dimen/mini_player_controls_margin_between"
+            android:layout_marginRight="@dimen/mini_player_controls_margin_between"
+            android:adjustViewBounds="true"
+            android:background="?attr/selectableItemBackground"
+            android:gravity="center_horizontal"
+            android:scaleType="fitXY"
+            android:src="@drawable/play_button"
+            app:tint="@color/theme_white" />
+
+        <ImageButton
+            android:id="@+id/mini_song_next"
+            android:layout_width="@dimen/mini_player_controls"
+            android:layout_height="@dimen/mini_player_controls"
+            android:adjustViewBounds="true"
+            android:background="?attr/selectableItemBackground"
+            android:scaleType="fitXY"
+            android:src="@drawable/next_button"
+            app:tint="@color/theme_white" />
+    </LinearLayout>
+
 </RelativeLayout>
-</androidx.coordinatorlayout.widget.CoordinatorLayout>

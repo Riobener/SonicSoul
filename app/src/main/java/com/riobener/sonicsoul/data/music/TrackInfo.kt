@@ -7,4 +7,5 @@ data class TrackInfo(
     val imageSource: String?,
     val bigImageSource: String?,
     val trackSource: String?,
+    var isPlaying: Boolean,
 )

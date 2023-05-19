@@ -1,7 +1,9 @@
 package com.riobener.sonicsoul.ui
 
 import android.content.Intent
+import android.media.MediaPlayer
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -11,6 +13,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.riobener.sonicsoul.data.music.TrackInfo
 import com.riobener.sonicsoul.databinding.MusicListFragmentBinding
 import com.riobener.sonicsoul.player.PlayerViewModel
 import com.riobener.sonicsoul.ui.adapters.MusicAdapter
@@ -43,12 +46,15 @@ class MusicListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        activity?.let{
+        activity?.let {
             (it as AppCompatActivity).supportActionBar?.show()
         }
-
         initAdapter(binding.root)
-        processTokenExisting()
+        if (!viewModel.alreadyLoaded) {
+            processTokenExisting()
+        } else {
+            fillMusicContent(music = playerViewModel.getPlaylist())
+        }
         viewModel.toastFlow.launchAndCollectIn(viewLifecycleOwner) {
             toast(it)
         }
@@ -73,10 +79,14 @@ class MusicListFragment : Fragment() {
         binding.loginButton.isEnabled = false
         viewModel.loadMusic()
         viewModel.musicInfoFlow.launchAndCollectIn(viewLifecycleOwner) { music ->
-            val musicList = music.filter { it.trackSource != null }
-            musicAdapter.differ.submitList(musicList)
-            playerViewModel.setPlaylist(musicList)
+            fillMusicContent(music)
         }
+    }
+
+    fun fillMusicContent(music: List<TrackInfo>) {
+        val musicList = music.filter { it.trackSource != null }
+        musicAdapter.differ.submitList(musicList)
+        playerViewModel.setPlaylist(musicList)
     }
 
     private fun processTokenExisting() {
@@ -123,7 +133,17 @@ class MusicListFragment : Fragment() {
             adapter = musicAdapter
             layoutManager = LinearLayoutManager(activity)
         }
-
+        playerViewModel.isPlaying.launchAndCollectIn(viewLifecycleOwner) {
+            playerViewModel.currentTrack.value?.let { currentTrack ->
+                val currentIndex = musicAdapter.differ.currentList.indexOf(currentTrack)
+                musicAdapter.differ.currentList[currentIndex].isPlaying = currentTrack.isPlaying
+                playerViewModel.previousTrack.value?.let { previous ->
+                    val lastIndex = musicAdapter.differ.currentList.indexOf(previous)
+                    musicAdapter.differ.currentList[lastIndex].isPlaying = previous.isPlaying
+                }
+            }
+            musicAdapter.notifyDataSetChanged()
+        }
     }
 
     private fun openAuthPage(intent: Intent) {

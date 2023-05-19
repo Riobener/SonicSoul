@@ -26,7 +26,8 @@
         android:orientation="vertical"
         android:gravity="center"
         android:background="@color/theme_gray"
-        android:padding="10dp">
+        android:padding="10dp"
+        android:visibility="gone">
         <TextView
             android:id="@+id/music_title"
             android:layout_width="wrap_content"

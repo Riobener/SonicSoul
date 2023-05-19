@@ -9,4 +9,5 @@ fun Item.toTrackInfo() = TrackInfo(
     imageSource = track.album.images.lastOrNull()?.url,
     bigImageSource = track.album.images.firstOrNull()?.url,
     trackSource = track.url,
+    isPlaying = false
 )

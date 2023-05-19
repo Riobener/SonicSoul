@@ -38,6 +38,7 @@ class MusicAdapter : RecyclerView.Adapter<MusicAdapter.MusicViewHolder>() {
         holder.itemView.setOnClickListener{
             onItemClick?.invoke(trackInfo)
         }
+
         holder.itemView.apply{
             trackInfo.imageSource?.let{ image ->
                 Glide.with(this).load(image).into(music_img)
@@ -45,6 +46,14 @@ class MusicAdapter : RecyclerView.Adapter<MusicAdapter.MusicViewHolder>() {
             }
             music_title.text = trackInfo.title
             music_author.text = trackInfo.artistName
+
+            if(trackInfo.isPlaying){
+                Glide.with(this).load(R.drawable.waveform).into(waveform)
+                waveform.visibility = View.VISIBLE
+            }else{
+                waveform.visibility = View.GONE
+            }
+            Log.d("TRACKFINAL", trackInfo.isPlaying.toString())
         }
     }
 

@@ -9,7 +9,18 @@
         android:id="@+id/music_img"
         android:layout_width="45dp"
         android:layout_height="45dp"
-        android:layout_margin="10dp" />
+        android:layout_margin="10dp" >
+    </ImageView>
+
+    <ImageView
+        android:id="@+id/waveform"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_toEndOf="@+id/music_img"
+        android:layout_toStartOf="@+id/music_options"
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY">
+    </ImageView>
 
     <TextView
         android:id="@+id/music_title"
@@ -31,6 +42,7 @@
         android:layout_alignBottom="@id/music_img"
         android:layout_marginBottom="5dp"
         android:layout_toEndOf="@id/music_img"
+        android:layout_toStartOf="@+id/music_options"
         android:text="Author"
         android:textColor="@color/theme_light"
         android:textSize="@dimen/music_item_author" />

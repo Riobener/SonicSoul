@@ -39,6 +39,9 @@ class PlayerViewModel @Inject constructor(
     private val _currentTrack: MutableStateFlow<TrackInfo?> = MutableStateFlow(null)
     val currentTrack: StateFlow<TrackInfo?> = _currentTrack
 
+    private val _previousTrack: MutableStateFlow<TrackInfo?> = MutableStateFlow(null)
+    val previousTrack: StateFlow<TrackInfo?> = _previousTrack
+
     private val _currentPosition: MutableStateFlow<Long> = MutableStateFlow(0)
     val currentPosition: StateFlow<Long> = _currentPosition
 
@@ -71,13 +74,12 @@ class PlayerViewModel @Inject constructor(
                 } else if (playbackState == ExoPlayer.STATE_ENDED) {
                     // The current track has ended, handle looping or play next track
                     if (_isLooping.value && currentTrackIndex != -1) {
-                        exoPlayer.seekToDefaultPosition()
+                        //exoPlayer.seekToDefaultPosition()
                         exoPlayer.playWhenReady = true
                     } else {
                         playNextTrack()
                     }
                 }
-                setCurrentTrack()
             }
         })
     }
@@ -110,12 +112,13 @@ class PlayerViewModel @Inject constructor(
 
     fun play() {
         startPlayback()
-        if (exoPlayer.playbackState == SimpleExoPlayer.STATE_ENDED) {
+/*        if (exoPlayer.playbackState == SimpleExoPlayer.STATE_ENDED) {
             // Restart the playback from the beginning
             exoPlayer.seekToDefaultPosition()
-        }
+        }*/
         exoPlayer.playWhenReady = true
         _isPlaying.value = exoPlayer.playWhenReady
+        playlist[currentTrackIndex].isPlaying = true
         setCurrentTrack()
     }
 
@@ -123,25 +126,39 @@ class PlayerViewModel @Inject constructor(
         stopPlayback()
         exoPlayer.playWhenReady = false
         _isPlaying.value = false
+        playlist[currentTrackIndex].isPlaying = false
     }
 
     fun chooseAndPlayTrack(trackInfo: TrackInfo) {
         stopPlayback()
         val index = playlist.indexOf(trackInfo)
-        currentTrackIndex = index
-        val mediaSource = trackToMediaSource(playlist[currentTrackIndex])
-        //TODO Gapless effect
-        /*Thread.sleep(500)*/
-        exoPlayer.prepare(mediaSource)
-        currentMediaSource = mediaSource
-        play()
-        setCurrentTrack()
+        if (index == currentTrackIndex && exoPlayer.isPlaying) {
+            pause()
+        } else if (index == currentTrackIndex && !exoPlayer.isPlaying) {
+            play()
+        } else {
+            if (currentTrackIndex != -1){
+                playlist[currentTrackIndex].isPlaying = false
+                _previousTrack.value = playlist[currentTrackIndex]
+            }
+            currentTrackIndex = index
+            val mediaSource = trackToMediaSource(playlist[currentTrackIndex])
+            //TODO Gapless effect
+            /*Thread.sleep(500)*/
+            exoPlayer.prepare(mediaSource)
+            currentMediaSource = mediaSource
+            play()
+        }
     }
 
     fun playNextTrack() {
         // Increment the track index
         if (currentMediaSource == null) return
         stopPlayback()
+        if (currentTrackIndex != -1){
+            playlist[currentTrackIndex].isPlaying = false
+            _previousTrack.value = playlist[currentTrackIndex]
+        }
         currentTrackIndex++
         if (currentTrackIndex >= playlist.size - 1 && exoPlayer.playbackState == ExoPlayer.STATE_ENDED) {
             // The last track in the playlist has ended, stop playback
@@ -160,6 +177,10 @@ class PlayerViewModel @Inject constructor(
     fun playPreviousTrack() {
         // Decrement the track index
         stopPlayback()
+        if (currentTrackIndex != -1){
+            playlist[currentTrackIndex].isPlaying = false
+            _previousTrack.value = playlist[currentTrackIndex]
+        }
         currentTrackIndex--
         if (currentTrackIndex < 0) {
             currentTrackIndex = playlist.size - 1
@@ -177,7 +198,10 @@ class PlayerViewModel @Inject constructor(
     fun setPlaylist(newPlaylist: List<TrackInfo>) {
         playlist.clear()
         playlist.addAll(newPlaylist)
-        currentTrackIndex = -1
+    }
+
+    fun getPlaylist() : MutableList<TrackInfo>{
+        return playlist
     }
 
     private fun trackToMediaSource(trackInfo: TrackInfo): MediaSource {

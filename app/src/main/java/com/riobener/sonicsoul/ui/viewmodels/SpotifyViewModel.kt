@@ -50,6 +50,7 @@ class SpotifyViewModel @Inject constructor(
     val serviceCredentialsFlow: Flow<ServiceCredentials?>
         get() = serviceCredentialsMutableStateFlow.asStateFlow()
 
+    var alreadyLoaded = false
 
     //Loading
     private val loadingMutableStateFlow = MutableStateFlow(false)
@@ -74,6 +75,7 @@ class SpotifyViewModel @Inject constructor(
                 spotifyMusicRepository.getTracks()
             }.onSuccess {
                 musicInfoMutableStateFlow.value = it
+                alreadyLoaded = true
                 loadingMutableStateFlow.value = false
             }.onFailure {
                 loadingMutableStateFlow.value = false

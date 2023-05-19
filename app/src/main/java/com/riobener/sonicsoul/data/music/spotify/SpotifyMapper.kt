@@ -7,5 +7,6 @@ fun Item.toTrackInfo() = TrackInfo(
     title = track.name,
     artistName = track.artists.joinToString(separator = ", ") { it.name },
     imageSource = track.album.images.lastOrNull()?.url,
+    bigImageSource = track.album.images.firstOrNull()?.url,
     trackSource = track.url,
 )

@@ -21,40 +21,6 @@
             android:id="@+id/toolbar"
             app:layout_collapseMode="pin">
         </androidx.appcompat.widget.Toolbar>
-        <!--<RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="?actionBarSize">
-            <ImageButton
-                android:id="@+id/drawer_button"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:src="@drawable/menu_drawer"
-                android:background="?attr/selectableItemBackground"
-                app:tint="@color/theme_white"
-                android:layout_alignParentStart="true"/>
-            <TextView
-                android:id="@+id/page_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Page title"
-                android:textColor="@color/theme_white"
-                android:textSize="@dimen/music_details_playing_now"
-                android:layout_toEndOf="@+id/drawer_button"
-                android:layout_marginStart="10dp"/>
-            <ImageButton
-                android:id="@+id/search_button"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:src="@drawable/search_music"
-                android:background="?attr/selectableItemBackground"
-                app:tint="@color/theme_white"
-                android:layout_alignParentEnd="true"/>
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="4dp"
-                android:layout_alignParentBottom="true"
-                android:background="@color/theme_gray"/>
-        </RelativeLayout>-->
         <View
             android:layout_width="match_parent"
             android:layout_height="4dp"
@@ -84,6 +50,5 @@
         app:tint="@color/theme_white"
         app:itemIconTint="@color/theme_white"
         android:layoutDirection="ltr"/>
-
 
 </androidx.drawerlayout.widget.DrawerLayout>

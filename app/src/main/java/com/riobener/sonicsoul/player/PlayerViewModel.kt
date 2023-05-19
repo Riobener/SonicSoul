@@ -2,19 +2,30 @@ package com.riobener.sonicsoul.player
 
 import android.content.Context
 import android.net.Uri
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.Timeline
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.riobener.sonicsoul.data.music.TrackInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.*
+import kotlinx.coroutines.GlobalScope.coroutineContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import java.util.concurrent.Executor
+import java.util.concurrent.Executors
+import java.util.concurrent.ScheduledExecutorService
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @HiltViewModel
@@ -67,36 +78,71 @@ class PlayerViewModel @Inject constructor(
                         playNextTrack()
                     }
                 }
+                setCurrentTrack()
             }
         })
     }
 
+    fun setCurrentTrack() {
+        if (currentTrackIndex != -1) {
+            _currentTrack.value = playlist[currentTrackIndex]
+        } else {
+            _currentTrack.value = null
+        }
+    }
+
+    private fun startPlayback() {
+        viewModelScope.launch {
+            while (true) {
+                Log.d("Player duration (ms): ", exoPlayer.currentPosition.toString())
+                _currentPosition.value = exoPlayer.currentPosition
+                delay(1000) // Delay for 1 second
+            }
+        }
+    }
+
+    fun changeTrackProgress(progress: Long) {
+        exoPlayer.seekTo(progress)
+    }
+
+    fun stopPlayback() {
+        viewModelScope.coroutineContext.cancelChildren()
+    }
+
     fun play() {
+        startPlayback()
         if (exoPlayer.playbackState == SimpleExoPlayer.STATE_ENDED) {
             // Restart the playback from the beginning
             exoPlayer.seekToDefaultPosition()
         }
         exoPlayer.playWhenReady = true
         _isPlaying.value = exoPlayer.playWhenReady
+        setCurrentTrack()
     }
 
     fun pause() {
+        stopPlayback()
         exoPlayer.playWhenReady = false
         _isPlaying.value = false
     }
 
     fun chooseAndPlayTrack(trackInfo: TrackInfo) {
+        stopPlayback()
         val index = playlist.indexOf(trackInfo)
         currentTrackIndex = index
         val mediaSource = trackToMediaSource(playlist[currentTrackIndex])
+        //TODO Gapless effect
+        /*Thread.sleep(500)*/
         exoPlayer.prepare(mediaSource)
         currentMediaSource = mediaSource
         play()
+        setCurrentTrack()
     }
 
     fun playNextTrack() {
         // Increment the track index
         if (currentMediaSource == null) return
+        stopPlayback()
         currentTrackIndex++
         if (currentTrackIndex >= playlist.size - 1 && exoPlayer.playbackState == ExoPlayer.STATE_ENDED) {
             // The last track in the playlist has ended, stop playback
@@ -109,10 +155,12 @@ class PlayerViewModel @Inject constructor(
         exoPlayer.prepare(mediaSource)
         currentMediaSource = mediaSource
         play()
+        setCurrentTrack()
     }
 
     fun playPreviousTrack() {
         // Decrement the track index
+        stopPlayback()
         currentTrackIndex--
         if (currentTrackIndex < 0) {
             currentTrackIndex = playlist.size - 1
@@ -133,7 +181,7 @@ class PlayerViewModel @Inject constructor(
         currentTrackIndex = -1
     }
 
-    fun trackToMediaSource(trackInfo: TrackInfo): MediaSource {
+    private fun trackToMediaSource(trackInfo: TrackInfo): MediaSource {
         return mediaSourceFactory.createMediaSource(Uri.parse(trackInfo.trackSource))
     }
 

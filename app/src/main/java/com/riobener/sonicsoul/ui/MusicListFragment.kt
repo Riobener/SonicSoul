@@ -6,7 +6,9 @@ import android.view.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.riobener.sonicsoul.databinding.MusicListFragmentBinding
 import com.riobener.sonicsoul.player.PlayerViewModel
@@ -26,7 +28,7 @@ class MusicListFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel by viewModels<SpotifyViewModel>()
-    private val playerViewModel by viewModels<PlayerViewModel>()
+    private val playerViewModel by activityViewModels<PlayerViewModel>()
 
     private lateinit var musicAdapter: MusicAdapter
 
@@ -79,7 +81,7 @@ class MusicListFragment : Fragment() {
         }
         viewModel.getServiceCredentials()
         viewModel.serviceCredentialsFlow.launchAndCollectIn(viewLifecycleOwner) { serviceCredentials ->
-            serviceCredentials?.let { credentials ->
+            serviceCredentials?.let {
                 processMusicLoad()
             } ?: processAuth()
         }
@@ -109,6 +111,8 @@ class MusicListFragment : Fragment() {
         musicAdapter = MusicAdapter()
         musicAdapter.onItemClick = {
             playerViewModel.chooseAndPlayTrack(it)
+            val action = MusicListFragmentDirections.actionMusicListToMusicPlayer()
+            Navigation.findNavController(view).navigate(action)
         }
         binding.musicList.apply {
             adapter = musicAdapter

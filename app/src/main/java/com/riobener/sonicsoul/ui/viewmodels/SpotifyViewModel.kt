@@ -12,7 +12,6 @@ import com.riobener.sonicsoul.data.auth.ServiceName
 import com.riobener.sonicsoul.data.auth.spotify.SpotifyAuthRepository
 import com.riobener.sonicsoul.data.music.TrackInfo
 import com.riobener.sonicsoul.data.music.spotify.SpotifyMusicRepository
-import com.riobener.sonicsoul.data.music.spotify.SpotifyTrackResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.Channel

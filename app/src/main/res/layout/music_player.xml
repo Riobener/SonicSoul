@@ -60,8 +60,7 @@
         <ImageView
             android:id="@+id/song_card_image"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@drawable/ic_launcher_foreground" />
+            android:layout_height="match_parent" />
     </RelativeLayout>
 
     <TextView

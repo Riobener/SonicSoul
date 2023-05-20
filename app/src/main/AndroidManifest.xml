@@ -15,7 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SonicSoul">
         <activity
-            android:name=".SplahScreenActivity"
+            android:name=".StartupScreenActivity"
             android:exported="true"
             android:theme="@style/Theme.SonicSoul.NoActionBar">
             <intent-filter>

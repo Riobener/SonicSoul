@@ -6,6 +6,8 @@ import com.riobener.sonicsoul.data.AppDatabase
 import com.riobener.sonicsoul.data.auth.ServiceCredentialsDao
 import com.riobener.sonicsoul.data.auth.ServiceCredentialsRepository
 import com.riobener.sonicsoul.data.auth.spotify.SpotifyAuthRepository
+import com.riobener.sonicsoul.data.settings.SettingsDao
+import com.riobener.sonicsoul.data.settings.SettingsRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -37,5 +39,15 @@ object DatabaseModule {
     @Provides
     fun provideSpotifyAuthRepository(serviceCredentialsRepository: ServiceCredentialsRepository): SpotifyAuthRepository {
         return SpotifyAuthRepository(serviceCredentialsRepository)
+    }
+
+    @Provides
+    fun provideSettingsDao(db: AppDatabase): SettingsDao {
+        return db.settingsDao()
+    }
+
+    @Provides
+    fun provideSettingsRepository(dao: SettingsDao): SettingsRepository {
+        return SettingsRepository(dao)
     }
 }

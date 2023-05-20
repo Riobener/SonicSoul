@@ -10,6 +10,10 @@
         android:name="com.riobener.sonicsoul.ui.MusicListFragment"
         android:label="Online music"
         tools:layout="@layout/music_list_fragment">
+        <argument
+            android:name="online_offline"
+            app:argType="string"
+            android:defaultValue="offline" />
         <action
             android:id="@+id/action_MusicList_to_MusicPlayer"
             app:destination="@id/MusicPlayer" />

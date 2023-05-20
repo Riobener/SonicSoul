@@ -11,8 +11,6 @@ data class AppAuth(
     private val serviceConfiguration = AuthorizationServiceConfiguration(
         Uri.parse(serviceConfig.AUTHORIZE_URL),
         Uri.parse(serviceConfig.TOKEN_URL),
-/*        null, // registration endpoint
-        Uri.parse(serviceConfig.END_SESSION_URI)//TODO logout*/
     )
 
     fun getAuthRequest(): AuthorizationRequest {
@@ -23,12 +21,6 @@ data class AppAuth(
             Uri.parse(serviceConfig.REDIRECT_URI),
         ).setScopes(serviceConfig.SCOPES).build()
     }
-//TODO logout
-/*    fun getEndSessionRequest(): EndSessionRequest {
-        return EndSessionRequest.Builder(serviceConfiguration)
-            .setPostLogoutRedirectUri(AuthConfig.LOGOUT_CALLBACK_URL.toUri())
-            .build()
-    }*/
 
     fun getRefreshTokenRequest(refreshToken: String): TokenRequest {
         return TokenRequest.Builder(

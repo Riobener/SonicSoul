@@ -17,6 +17,7 @@ import com.riobener.sonicsoul.data.music.TrackInfo
 import com.riobener.sonicsoul.databinding.MusicListFragmentBinding
 import com.riobener.sonicsoul.player.PlayerViewModel
 import com.riobener.sonicsoul.ui.adapters.MusicAdapter
+import com.riobener.sonicsoul.ui.viewmodels.MusicViewModel
 import com.riobener.sonicsoul.ui.viewmodels.SpotifyViewModel
 import com.riobener.sonicsoul.utils.launchAndCollectIn
 import com.riobener.sonicsoul.utils.toast
@@ -35,6 +36,7 @@ class MusicListFragment : Fragment() {
 
     private val viewModel by viewModels<SpotifyViewModel>()
     private val playerViewModel by activityViewModels<PlayerViewModel>()
+    private val musicViewModel by activityViewModels<MusicViewModel>()
 
     private lateinit var musicAdapter: MusicAdapter
 
@@ -56,7 +58,7 @@ class MusicListFragment : Fragment() {
         viewModel.toastFlow.launchAndCollectIn(viewLifecycleOwner) {
             toast(it)
         }
-        if (viewModel.alreadyLoaded) {
+        if (musicViewModel.alreadyLoaded) {
             fillMusicContent(music = playerViewModel.getPlaylist())
         } else {
             processTokenExisting()
@@ -80,8 +82,8 @@ class MusicListFragment : Fragment() {
     fun processMusicLoad() {
         binding.tokenEmptyWindow.isVisible = false
         binding.loginButton.isEnabled = false
-        viewModel.loadMusic()
-        viewModel.musicInfoFlow.launchAndCollectIn(viewLifecycleOwner) { music ->
+        musicViewModel.loadMusic()
+        musicViewModel.musicInfoFlow.launchAndCollectIn(viewLifecycleOwner) { music ->
             fillMusicContent(music)
         }
     }
@@ -101,7 +103,7 @@ class MusicListFragment : Fragment() {
                     Glide.with(this@MusicListFragment).load(image).into(binding.miniPlayer.miniPlayerMusicImg)
                 }
                 binding.miniPlayer.miniMusicTitle.text = currentTrack.title
-                binding.miniPlayer.miniMusicAuthor.text = currentTrack.artistName
+                binding.miniPlayer.miniMusicAuthor.text = currentTrack.artist
             } else {
                 binding.miniPlayer.miniPlayerLayout.visibility = View.GONE
             }
@@ -121,6 +123,7 @@ class MusicListFragment : Fragment() {
             } else {
                 binding.miniPlayer.miniSongPlayPause.setImageResource(R.drawable.play_button)
             }
+            musicAdapter.notifyDataSetChanged()
         }
         binding.miniPlayer.miniPlayerLayout.setOnClickListener {
             val action = MusicListFragmentDirections.actionMusicListToMusicPlayer()
@@ -129,7 +132,7 @@ class MusicListFragment : Fragment() {
     }
 
     private fun processTokenExisting() {
-        viewModel.loadingFlow.launchAndCollectIn(viewLifecycleOwner) { isLoading ->
+        musicViewModel.loadingFlow.launchAndCollectIn(viewLifecycleOwner) { isLoading ->
             binding.musicListProgressBar.isVisible = isLoading
             binding.musicList.isVisible = !isLoading
         }
@@ -170,15 +173,7 @@ class MusicListFragment : Fragment() {
             adapter = musicAdapter
             layoutManager = LinearLayoutManager(activity)
         }
-        playerViewModel.currentTrack.launchAndCollectIn(viewLifecycleOwner) { currentTrack ->
-            currentTrack?.let {
-                val currentIndex = musicAdapter.differ.currentList.indexOf(currentTrack)
-                musicAdapter.differ.currentList[currentIndex].isPlaying = currentTrack.isPlaying
-            }
-            playerViewModel.previousTrack.value?.let { previous ->
-                val lastIndex = musicAdapter.differ.currentList.indexOf(previous)
-                musicAdapter.differ.currentList[lastIndex].isPlaying = previous.isPlaying
-            }
+        playerViewModel.currentTrack.launchAndCollectIn(viewLifecycleOwner) {
             musicAdapter.notifyDataSetChanged()
         }
     }

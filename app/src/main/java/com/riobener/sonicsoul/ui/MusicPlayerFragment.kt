@@ -100,7 +100,7 @@ class MusicPlayerFragment : Fragment() {
             Glide.with(this).load(image).into(song_card_image)
         }
         binding.songName.text = currentTrack.title
-        binding.songAuthor.text = currentTrack.artistName
+        binding.songAuthor.text = currentTrack.artist
     }
 
     override fun onDestroyView() {

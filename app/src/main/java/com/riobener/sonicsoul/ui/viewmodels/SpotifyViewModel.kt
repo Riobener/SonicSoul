@@ -29,10 +29,8 @@ import javax.inject.Inject
 @HiltViewModel
 class SpotifyViewModel @Inject constructor(
     @ApplicationContext applicationContext: Context,
-    private val state: SavedStateHandle,
     private val authRepository: SpotifyAuthRepository,
     private val serviceCredentialsRepository: ServiceCredentialsRepository,
-    private val spotifyMusicRepository: SpotifyMusicRepository,
 ) : ViewModel() {
     //Auth
     private val authService: AuthorizationService = AuthorizationService(applicationContext)
@@ -50,38 +48,14 @@ class SpotifyViewModel @Inject constructor(
     val serviceCredentialsFlow: Flow<ServiceCredentials?>
         get() = serviceCredentialsMutableStateFlow.asStateFlow()
 
-    var alreadyLoaded = false
-
     //Loading
     private val loadingMutableStateFlow = MutableStateFlow(false)
     val loadingFlow: Flow<Boolean>
         get() = loadingMutableStateFlow.asStateFlow()
 
-    //Music
-    private val musicInfoMutableStateFlow = MutableStateFlow<List<TrackInfo>>(emptyList())
-    val musicInfoFlow: Flow<List<TrackInfo>>
-        get() = musicInfoMutableStateFlow.asStateFlow()
-
     fun getServiceCredentials(){
         viewModelScope.launch {
             serviceCredentialsMutableStateFlow.value = serviceCredentialsRepository.findByServiceName(ServiceName.SPOTIFY)
-        }
-    }
-
-    fun loadMusic() {
-        viewModelScope.launch {
-            loadingMutableStateFlow.value = true
-            runCatching {
-                spotifyMusicRepository.getTracks()
-            }.onSuccess {
-                musicInfoMutableStateFlow.value = it
-                alreadyLoaded = true
-                loadingMutableStateFlow.value = false
-            }.onFailure {
-                loadingMutableStateFlow.value = false
-                musicInfoMutableStateFlow.value = emptyList()
-                toastEventChannel.trySendBlocking(R.string.music_load_exception)
-            }
         }
     }
 

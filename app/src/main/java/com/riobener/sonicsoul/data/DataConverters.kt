@@ -2,6 +2,7 @@ package com.riobener.sonicsoul.data
 
 import androidx.room.TypeConverter
 import com.riobener.sonicsoul.data.auth.ServiceName
+import com.riobener.sonicsoul.data.music.TrackSource
 import com.riobener.sonicsoul.data.settings.SettingsName
 import java.util.*
 
@@ -23,4 +24,10 @@ object DataConverters {
     fun toSettingsName(value: String) = enumValueOf<SettingsName>(value)
     @TypeConverter
     fun fromSettingsName(value: SettingsName) = value.name
+
+    //ENUM TrackSource
+    @TypeConverter
+    fun toTrackSource(value: String) = enumValueOf<TrackSource>(value)
+    @TypeConverter
+    fun fromTrackSource(value: TrackSource) = value.name
 }

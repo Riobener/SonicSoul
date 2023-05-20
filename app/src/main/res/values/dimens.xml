@@ -1,5 +1,9 @@
 <resources>
     <dimen name="fab_margin">16dp</dimen>
+
+    <dimen name="splash_welcome">25sp</dimen>
+    <dimen name="splash_another">17sp</dimen>
+
     <dimen name="music_item_title">17sp</dimen>
     <dimen name="music_item_author">12sp</dimen>
     <dimen name="music_details_playing_now">20sp</dimen>

@@ -68,12 +68,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/song_card_container"
-        android:ellipsize="marquee"
-        android:marqueeRepeatLimit="marquee_forever"
         android:gravity="center_horizontal"
         android:text="Song name"
         android:textColor="@color/theme_white"
-        android:textSize="@dimen/music_details_song_name" />
+        android:textSize="@dimen/music_details_song_name"
+        android:ellipsize="marquee"
+        android:marqueeRepeatLimit ="marquee_forever"
+        android:singleLine="true" />
 
     <TextView
         android:id="@+id/song_author"
@@ -82,6 +83,7 @@
         android:layout_below="@+id/song_name"
         android:ellipsize="marquee"
         android:marqueeRepeatLimit="marquee_forever"
+        android:singleLine="true"
         android:gravity="center_horizontal"
         android:text="Author"
         android:textColor="@color/theme_light"

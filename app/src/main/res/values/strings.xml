@@ -18,9 +18,13 @@
     <string name="online_music">Online music</string>
     <string name="need_authorize">You must be logged in \n to access online music</string>
     <string name="login_text">Log in</string>
+    <string name="setup_local_directory">Show</string>
 
     <string name="navigation_drawer_close">Close</string>
     <string name="navigation_drawer_open">Open</string>
 
+    <string name="welcome_title">Welcome\n to the Sonic Soul!</string>
+    <string name="need_local_setup">For the purpose of initial setup of the application, select the folder where your local music is located</string>
+    <string name="need_local_setup_rus">В целях первичной настройки приложения, выберите папку, где расположена ваша локальная музыка</string>
 
 </resources>

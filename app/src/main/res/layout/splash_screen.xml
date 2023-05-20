@@ -4,6 +4,58 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/theme_black"
+    android:orientation="vertical"
     tools:context=".SplahScreenActivity">
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|center_horizontal"
+        android:layout_marginTop="120dp"
+        android:layout_marginBottom="60dp"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            android:layout_margin="10dp"
+            android:src="@drawable/icon" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/welcome_title"
+            android:textColor="@color/theme_light"
+            android:textSize="@dimen/splash_welcome" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:background="@color/theme_gray"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="10dp">
+
+        <TextView
+            android:id="@+id/music_title"
+            android:layout_width="300sp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/need_local_setup"
+            android:textColor="@color/theme_white"
+            android:textSize="@dimen/music_item_title" />
+
+        <Button
+            android:id="@+id/setup_local_directory_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/setup_local_directory"
+            android:textAllCaps="false"
+            android:textSize="@dimen/button_text_size" />
+    </LinearLayout>
 </LinearLayout>

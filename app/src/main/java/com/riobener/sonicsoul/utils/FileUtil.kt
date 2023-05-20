@@ -24,7 +24,7 @@ object FileUtil {
     fun getFullPathFromTreeUri(treeUri: Uri?, con: Context?): String? {
         if (treeUri == null) return null
         var volumePath: String? = con?.let { getVolumePath(getVolumeIdFromTreeUri(treeUri), it) } ?: File.separator
-        if (volumePath is String) volumePath = volumePath.substring(0, volumePath.length - 1)
+        //if (volumePath is String) volumePath = volumePath.substring(0, volumePath.length - 1)
         var documentPath = getDocumentPathFromTreeUri(treeUri)
         if (documentPath != null) {
             if (documentPath.endsWith(File.separator)) documentPath = documentPath.substring(0, documentPath.length - 1)

@@ -82,7 +82,7 @@ class MusicListFragment : Fragment() {
     fun processMusicLoad() {
         binding.tokenEmptyWindow.isVisible = false
         binding.loginButton.isEnabled = false
-        musicViewModel.loadMusic()
+        musicViewModel.loadOnlineMusic()
         musicViewModel.musicInfoFlow.launchAndCollectIn(viewLifecycleOwner) { music ->
             fillMusicContent(music)
         }

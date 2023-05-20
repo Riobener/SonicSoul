@@ -20,4 +20,8 @@ class SettingsRepository
     fun findAllSettings(): Flow<List<Settings>> {
         return settingsDao.findAll()
     }
+
+    suspend fun findBySettingsName(settingsName: SettingsName): Settings? {
+        return settingsDao.findBySettingsName(settingsName)
+    }
 }

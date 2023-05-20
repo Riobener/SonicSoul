@@ -11,7 +11,7 @@ class SettingsRepository
     private val settingsDao: SettingsDao,
 ) {
     suspend fun save(settings: Settings) {
-        settingsDao.findBySettingsName(settingsName = settings.name)?.let {
+        settingsDao.findBySettingsName(settingsName = settings.name.name)?.let {
             it.value = settings.value
             settingsDao.save(it)
         } ?: settingsDao.save(settings)
@@ -22,6 +22,6 @@ class SettingsRepository
     }
 
     suspend fun findBySettingsName(settingsName: SettingsName): Settings? {
-        return settingsDao.findBySettingsName(settingsName)
+        return settingsDao.findBySettingsName(settingsName.name)
     }
 }

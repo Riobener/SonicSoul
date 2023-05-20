@@ -73,8 +73,11 @@ interface TrackDao {
     suspend fun deleteById(id: UUID)
 
     @Query("SELECT * FROM track WHERE source = :source")
-    fun findAllBySource(source: TrackSource): Flow<List<Track>>
+    suspend fun findAllBySource(source: String): List<Track>
 
     @Query("SELECT * FROM track WHERE (id = :id or (external_id = :externalId and :externalId is not null)) ")
     suspend fun findByIdOrExternalId(id: UUID?, externalId: String?): Track?
+
+    @Query("SELECT * FROM track WHERE hash = :hash ")
+    suspend fun findByHash(hash: String): Track?
 }

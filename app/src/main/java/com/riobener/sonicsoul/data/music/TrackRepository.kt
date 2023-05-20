@@ -1,6 +1,7 @@
 package com.riobener.sonicsoul.data.music
 
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class TrackRepository
@@ -8,7 +9,7 @@ class TrackRepository
     private val trackDao: TrackDao,
 ) {
     suspend fun save(track: Track) {
-        trackDao.findByIdOrExternalId(id = track.id, externalId = track.externalId)?.let {
+        trackDao.findByHash(track.hash)?.let {
             it.title = track.title
             it.artist = track.artist
             it.imageSource = track.imageSource
@@ -19,7 +20,7 @@ class TrackRepository
         } ?: trackDao.save(track)
     }
 
-    fun findAllBySource(source: TrackSource): Flow<List<Track>> {
-        return trackDao.findAllBySource(source)
+    suspend fun findAllBySource(source: TrackSource): List<TrackInfo> {
+        return trackDao.findAllBySource(source.name).map{it.toTrackInfo()}
     }
 }

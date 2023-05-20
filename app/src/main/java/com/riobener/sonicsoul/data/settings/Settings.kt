@@ -35,7 +35,7 @@ interface SettingsDao {
     suspend fun save(settings: Settings)
 
     @Query("SELECT * FROM settings WHERE settings_name = :settingsName")
-    suspend fun findBySettingsName(settingsName: SettingsName): Settings?
+    suspend fun findBySettingsName(settingsName: String): Settings?
 
     @Query("SELECT * FROM settings")
     fun findAll(): Flow<List<Settings>>

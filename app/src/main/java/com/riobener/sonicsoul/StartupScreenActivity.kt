@@ -17,6 +17,7 @@ import android.net.Uri
 import androidx.activity.viewModels
 import com.riobener.sonicsoul.data.settings.Settings
 import com.riobener.sonicsoul.data.settings.SettingsName
+import com.riobener.sonicsoul.ui.viewmodels.MusicViewModel
 import com.riobener.sonicsoul.ui.viewmodels.SettingsViewModel
 import com.riobener.sonicsoul.utils.FileUtil
 import com.riobener.sonicsoul.utils.launchAndCollectIn
@@ -28,6 +29,7 @@ class StartupScreenActivity : AppCompatActivity() {
     private lateinit var binding: SplashScreenBinding
 
     private val viewModel by viewModels<SettingsViewModel>()
+    private val musicViewModel by viewModels<MusicViewModel>()
 
     companion object {
         private const val PERMISSIONS_CODE = 100
@@ -38,6 +40,7 @@ class StartupScreenActivity : AppCompatActivity() {
         binding = SplashScreenBinding.inflate(layoutInflater)
         viewModel.settings.launchAndCollectIn(this) {
             it.firstOrNull { it.name == SettingsName.LOCAL_DIRECTORY_PATH }?.let {
+                musicViewModel.saveLocalMusicToDatabase()
                 goToMainActivity()
             } ?: setContentView(binding.root)
         }
@@ -79,6 +82,7 @@ class StartupScreenActivity : AppCompatActivity() {
                         value = path
                     )
                 )
+                musicViewModel.saveLocalMusicToDatabase()
                 goToMainActivity()
             }
         }

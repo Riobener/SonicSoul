@@ -196,7 +196,9 @@ class PlayerViewModel @Inject constructor(
     }
 
     private fun trackToMediaSource(trackInfo: TrackInfo): MediaSource {
-        return mediaSourceFactory.createMediaSource(Uri.parse(trackInfo.trackSource))
+        return trackInfo.trackSource?.let{
+            mediaSourceFactory.createMediaSource(Uri.parse(it))
+        } ?: mediaSourceFactory.createMediaSource(Uri.parse(trackInfo.localPath))
     }
 
     override fun onCleared() {

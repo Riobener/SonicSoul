@@ -2,6 +2,7 @@ package com.riobener.sonicsoul.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -10,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.riobener.sonicsoul.R
@@ -38,6 +40,8 @@ class MusicListFragment : Fragment() {
     private val playerViewModel by activityViewModels<PlayerViewModel>()
     private val musicViewModel by activityViewModels<MusicViewModel>()
 
+    private val args: MusicListFragmentArgs by navArgs()
+
     private lateinit var musicAdapter: MusicAdapter
 
     override fun onCreateView(
@@ -50,6 +54,8 @@ class MusicListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Log.d("FRAGMENT3", isOffline().toString())
+        musicViewModel.isOffline = isOffline()
         activity?.let {
             (it as AppCompatActivity).supportActionBar?.show()
         }
@@ -59,10 +65,14 @@ class MusicListFragment : Fragment() {
             toast(it)
         }
         if (musicViewModel.alreadyLoaded) {
-            fillMusicContent(music = playerViewModel.getPlaylist())
+            processMusicLoad()
         } else {
             processTokenExisting()
         }
+    }
+
+    fun isOffline(): Boolean{
+        return args.onlineOffline == "offline"
     }
 
     fun processAuth() {
@@ -82,14 +92,14 @@ class MusicListFragment : Fragment() {
     fun processMusicLoad() {
         binding.tokenEmptyWindow.isVisible = false
         binding.loginButton.isEnabled = false
-        musicViewModel.loadOnlineMusic()
+        musicViewModel.loadMusic()
         musicViewModel.musicInfoFlow.launchAndCollectIn(viewLifecycleOwner) { music ->
             fillMusicContent(music)
         }
     }
 
     fun fillMusicContent(music: List<TrackInfo>) {
-        val musicList = music.filter { it.trackSource != null }
+        val musicList = music.filter { it.trackSource != null || it.localPath != null }
         musicAdapter.differ.submitList(musicList)
         playerViewModel.setPlaylist(musicList)
         musicAdapter.notifyDataSetChanged()

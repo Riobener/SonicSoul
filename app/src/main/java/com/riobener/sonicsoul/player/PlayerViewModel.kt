@@ -39,9 +39,6 @@ class PlayerViewModel @Inject constructor(
     private val _currentTrack: MutableStateFlow<TrackInfo?> = MutableStateFlow(null)
     val currentTrack: StateFlow<TrackInfo?> = _currentTrack
 
-    private val _previousTrack: MutableStateFlow<TrackInfo?> = MutableStateFlow(null)
-    val previousTrack: StateFlow<TrackInfo?> = _previousTrack
-
     private val _currentPosition: MutableStateFlow<Long> = MutableStateFlow(0)
     val currentPosition: StateFlow<Long> = _currentPosition
 
@@ -125,6 +122,9 @@ class PlayerViewModel @Inject constructor(
     }
 
     fun chooseAndPlayTrack(trackInfo: TrackInfo) {
+        getPlaylist().forEach{
+            Log.d("LIST BEFORE", it.isPlaying.toString())
+        }
         stopPlayback()
         val index = playlist.indexOf(trackInfo)
         if (index == currentTrackIndex && exoPlayer.isPlaying) {
@@ -134,7 +134,6 @@ class PlayerViewModel @Inject constructor(
         } else {
             if (currentTrackIndex != -1){
                 playlist[currentTrackIndex].isPlaying = false
-                _previousTrack.value = playlist[currentTrackIndex]
             }
             currentTrackIndex = index
             val mediaSource = trackToMediaSource(playlist[currentTrackIndex])
@@ -144,6 +143,11 @@ class PlayerViewModel @Inject constructor(
             currentMediaSource = mediaSource
             play()
         }
+        Log.d("LIST AFTER", "\n")
+        getPlaylist().forEach{
+            Log.d("LIST AFTER", it.isPlaying.toString())
+        }
+        Log.d("LIST AFTER", "\n")
         setCurrentTrack()
     }
 
@@ -152,7 +156,6 @@ class PlayerViewModel @Inject constructor(
         stopPlayback()
         if (currentTrackIndex != -1){
             playlist[currentTrackIndex].isPlaying = false
-            _previousTrack.value = playlist[currentTrackIndex]
         }
         currentTrackIndex++
         if (currentTrackIndex > playlist.size - 1) {
@@ -169,7 +172,6 @@ class PlayerViewModel @Inject constructor(
         stopPlayback()
         if (currentTrackIndex != -1){
             playlist[currentTrackIndex].isPlaying = false
-            _previousTrack.value = playlist[currentTrackIndex]
         }
         currentTrackIndex--
         if (currentTrackIndex < 0) {
@@ -186,7 +188,9 @@ class PlayerViewModel @Inject constructor(
         _isLooping.value = looping
     }
 
-    fun setPlaylist(newPlaylist: List<TrackInfo>) {
+    fun setPlaylist(newPlaylist: List<TrackInfo>, fromStart: Boolean) {
+        if(fromStart)
+            currentTrackIndex = -1
         playlist.clear()
         playlist.addAll(newPlaylist)
     }

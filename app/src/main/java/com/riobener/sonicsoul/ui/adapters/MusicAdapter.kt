@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.riobener.sonicsoul.R
 import com.riobener.sonicsoul.data.music.TrackInfo
 import kotlinx.android.synthetic.main.music_items.view.*
@@ -43,7 +44,7 @@ class MusicAdapter : RecyclerView.Adapter<MusicAdapter.MusicViewHolder>() {
             trackInfo.imageSource?.let{ image ->
                 Glide.with(this).load(image).into(music_img)
                 music_img.clipToOutline = true
-            }
+            } ?: music_img.setImageResource(R.drawable.icon)
             music_title.text = trackInfo.title
             music_author.text = trackInfo.artist
 

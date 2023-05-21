@@ -43,18 +43,15 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
         binding.toolbar.setupWithNavController(controller,appBarConfiguration)
         binding.navigationLayout.setNavigationItemSelectedListener {
+            binding.drawerLayout.close()
             when (it.itemId) {
                 R.id.LocalMusicList -> {
-                    Log.d("FRAGMENT", "1")
-                    //loadFragment(MusicListFragment(),"offline")
                     val action = MusicListFragmentDirections.actionMusicListSelf()
                     action.onlineOffline = "offline"
                     Navigation.findNavController(nav_host_fragment_content_main.requireView()).navigate(action)
                     true
                 }
                 R.id.OnlineMusicList -> {
-                    Log.d("FRAGMENT", "2")
-                    //loadFragment(MusicListFragment(),"online")
                     val action = MusicListFragmentDirections.actionMusicListSelf()
                     action.onlineOffline = "online"
                     Navigation.findNavController(nav_host_fragment_content_main.requireView()).navigate(action)
@@ -63,16 +60,6 @@ class MainActivity : AppCompatActivity() {
                 else -> false
             }
         }
-    }
-
-    private fun loadFragment(fragment: Fragment, value: String){
-        val bundle = Bundle()
-        bundle.putString("inputText",value )
-        fragment.arguments = bundle
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.nav_host_fragment_content_main, fragment)
-        transaction.disallowAddToBackStack()
-        transaction.commit()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

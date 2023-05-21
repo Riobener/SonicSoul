@@ -13,6 +13,7 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
+
         <!-- Customize your theme here. -->
     </style>
 
@@ -28,6 +29,11 @@
     <style name="RippleEffect">
         <item name="colorControlHighlight">@color/theme_white</item>
         <item name="android:background">?selectableItemBackground</item>
+    </style>
+
+    <style name="circleImageView">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
     </style>
 
 </resources>

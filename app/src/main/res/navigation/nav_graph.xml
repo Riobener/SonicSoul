@@ -13,15 +13,14 @@
         <argument
             android:name="online_offline"
             app:argType="string"
-            android:defaultValue="offline" />
+            android:defaultValue="online" />
         <action
             android:id="@+id/action_MusicList_to_MusicPlayer"
             app:destination="@id/MusicPlayer" />
         <action
             android:id="@+id/action_MusicList_self"
             app:destination="@id/MusicList"
-            app:popUpTo="@+id/MusicList"
-            app:popUpToInclusive="true"/>
+            app:restoreState="true"/>
     </fragment>
     <fragment
         android:id="@+id/MusicPlayer"
@@ -32,6 +31,7 @@
             android:id="@+id/action_MusicPlayer_to_MusicList"
             app:destination="@id/MusicList"
             app:popUpTo="@+id/MusicPlayer"
-            app:popUpToInclusive="true"/>
+            app:popUpToInclusive="true"
+            app:restoreState="true"/>
     </fragment>
 </navigation>

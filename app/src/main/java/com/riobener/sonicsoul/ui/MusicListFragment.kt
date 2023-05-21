@@ -14,6 +14,7 @@ import androidx.navigation.Navigation
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.riobener.sonicsoul.R
 import com.riobener.sonicsoul.data.music.TrackInfo
 import com.riobener.sonicsoul.databinding.MusicListFragmentBinding
@@ -24,6 +25,7 @@ import com.riobener.sonicsoul.ui.viewmodels.SpotifyViewModel
 import com.riobener.sonicsoul.utils.launchAndCollectIn
 import com.riobener.sonicsoul.utils.toast
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.android.synthetic.main.music_items.view.*
 import kotlinx.android.synthetic.main.music_list_fragment.*
 import kotlinx.android.synthetic.main.music_player.*
 import kotlinx.android.synthetic.main.music_player_mini.*
@@ -44,6 +46,8 @@ class MusicListFragment : Fragment() {
 
     private lateinit var musicAdapter: MusicAdapter
 
+    private var fragmentChanged: Boolean = false
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -54,7 +58,14 @@ class MusicListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.d("FRAGMENT3", isOffline().toString())
+        activity?.let {
+            if (isOffline()) {
+                (it as AppCompatActivity).supportActionBar?.title = "Offline Music"
+            } else {
+                (it as AppCompatActivity).supportActionBar?.title = "Online Music"
+            }
+        }
+        fragmentChanged = musicViewModel.isOffline != isOffline()
         musicViewModel.isOffline = isOffline()
         activity?.let {
             (it as AppCompatActivity).supportActionBar?.show()
@@ -64,14 +75,16 @@ class MusicListFragment : Fragment() {
         viewModel.toastFlow.launchAndCollectIn(viewLifecycleOwner) {
             toast(it)
         }
-        if (musicViewModel.alreadyLoaded) {
+        if (musicViewModel.alreadyLoaded && !fragmentChanged) {
+            fillMusicContent(music = playerViewModel.getPlaylist(), false)
+        } else if (fragmentChanged) {
             processMusicLoad()
         } else {
             processTokenExisting()
         }
     }
 
-    fun isOffline(): Boolean{
+    fun isOffline(): Boolean {
         return args.onlineOffline == "offline"
     }
 
@@ -94,14 +107,14 @@ class MusicListFragment : Fragment() {
         binding.loginButton.isEnabled = false
         musicViewModel.loadMusic()
         musicViewModel.musicInfoFlow.launchAndCollectIn(viewLifecycleOwner) { music ->
-            fillMusicContent(music)
+            fillMusicContent(music, true)
         }
     }
 
-    fun fillMusicContent(music: List<TrackInfo>) {
+    fun fillMusicContent(music: List<TrackInfo>, fromStart: Boolean) {
         val musicList = music.filter { it.trackSource != null || it.localPath != null }
         musicAdapter.differ.submitList(musicList)
-        playerViewModel.setPlaylist(musicList)
+        playerViewModel.setPlaylist(musicList,fromStart)
         musicAdapter.notifyDataSetChanged()
     }
 
@@ -111,7 +124,7 @@ class MusicListFragment : Fragment() {
                 binding.miniPlayer.miniPlayerLayout.visibility = View.VISIBLE
                 currentTrack.imageSource?.let { image ->
                     Glide.with(this@MusicListFragment).load(image).into(binding.miniPlayer.miniPlayerMusicImg)
-                }
+                } ?: binding.miniPlayer.miniPlayerMusicImg.setImageResource(R.drawable.icon)
                 binding.miniPlayer.miniMusicTitle.text = currentTrack.title
                 binding.miniPlayer.miniMusicAuthor.text = currentTrack.artist
             } else {
@@ -125,7 +138,11 @@ class MusicListFragment : Fragment() {
             playerViewModel.playNextTrack()
         }
         binding.miniPlayer.miniSongPlayPause.setOnClickListener {
-            playerViewModel.currentTrack.value?.let { currentTrack -> playerViewModel.chooseAndPlayTrack(currentTrack) }
+            playerViewModel.currentTrack.value?.let { currentTrack ->
+                playerViewModel.chooseAndPlayTrack(
+                    currentTrack
+                )
+            }
         }
         playerViewModel.isPlaying.launchAndCollectIn(viewLifecycleOwner) { isPlaying ->
             if (isPlaying) {

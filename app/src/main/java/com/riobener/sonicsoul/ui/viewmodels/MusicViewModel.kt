@@ -50,10 +50,9 @@ class MusicViewModel @Inject constructor(
         get() = musicInfoMutableStateFlow.asStateFlow()
 
     var alreadyLoaded = false
-    var isOffline = true
+    var isOffline = false
 
     fun loadMusic(){
-        Log.d("FRAGMENTLLLL",isOffline.toString())
         if(isOffline){
             loadOfflineMusic()
         }else{

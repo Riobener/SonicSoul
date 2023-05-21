@@ -93,12 +93,15 @@ class MusicPlayerFragment : Fragment() {
                 progressBarFlag = false
             }
         })
+        binding.backArrow.setOnClickListener {
+            activity?.onBackPressed();
+        }
     }
 
     private fun setupTrackInfo(currentTrack: TrackInfo) {
         currentTrack.bigImageSource?.let { image ->
-            Glide.with(this).load(image).into(song_card_image)
-        }
+            Glide.with(this).load(image).into(binding.songCardImage)
+        }?: binding.songCardImage.setImageResource(R.drawable.icon)
         binding.songName.text = currentTrack.title
         binding.songAuthor.text = currentTrack.artist
     }

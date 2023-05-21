@@ -21,6 +21,9 @@
             android:id="@+id/action_MusicList_self"
             app:destination="@id/MusicList"
             app:restoreState="true"/>
+        <action
+            android:id="@+id/action_MusicList_to_settingsFragment"
+            app:destination="@id/SettingsFragment" />
     </fragment>
     <fragment
         android:id="@+id/MusicPlayer"
@@ -33,5 +36,15 @@
             app:popUpTo="@+id/MusicPlayer"
             app:popUpToInclusive="true"
             app:restoreState="true"/>
+    </fragment>
+    <fragment
+        android:id="@+id/SettingsFragment"
+        android:name="com.riobener.sonicsoul.ui.SettingsFragment"
+        android:label="SettingsFragment" >
+        <action
+            android:id="@+id/action_settingsFragment_to_MusicList"
+            app:destination="@id/MusicList"
+            app:popUpTo="@+id/SettingsFragment"
+            app:popUpToInclusive="true" />
     </fragment>
 </navigation>

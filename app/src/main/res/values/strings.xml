@@ -25,6 +25,32 @@
 
     <string name="welcome_title">Welcome\n to the Sonic Soul!</string>
     <string name="need_local_setup">For the purpose of initial setup of the application, select the folder where your local music is located</string>
+
+    <string name="settings_audio">Audio</string>
+    <string name="settings_storage">Storage</string>
+    <string name="settings_service">Online service</string>
+    <string name="settings_visual">Visual</string>
+
+
+    <string name="settings_enable_gapless">Enable gapless effect</string>
+    <string name="settings_change_local_directory">Change local music directory</string>
+    <string name="settings_change_visual">Change app color theme</string>
+    <string name="settings_change_eq">Change equaliser</string>
+
+
     <string name="need_local_setup_rus">В целях первичной настройки приложения, выберите папку, где расположена ваша локальная музыка</string>
+    <!-- Preference Titles -->
+    <string name="messages_header">Messages</string>
+    <string name="sync_header">Sync</string>
+
+    <!-- Messages Preferences -->
+    <string name="signature_title">Your signature</string>
+    <string name="reply_title">Default reply action</string>
+
+    <!-- Sync Preferences -->
+    <string name="sync_title">Sync email periodically</string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails</string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
 
 </resources>

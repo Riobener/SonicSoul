@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <PreferenceCategory
+        app:title="@string/settings_audio">
+        <SwitchPreferenceCompat
+            app:key="notifications"
+            app:title="Enable message notifications"/>
+        <Preference
+            app:key="notifications"
+            app:title="@string/settings_change_eq"/>
+    </PreferenceCategory>
+    <PreferenceCategory
+        app:title="@string/settings_storage">
+        <Preference
+            app:key="feedback"
+            app:title="@string/settings_change_local_directory"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:title="@string/settings_service">
+        <Preference
+            app:key="feedback"
+            app:title="Default"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:title="@string/settings_visual">
+        <SwitchPreferenceCompat
+            app:key="notifications"
+            app:title="@string/settings_change_visual"/>
+    </PreferenceCategory>
+</PreferenceScreen>

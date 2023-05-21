@@ -13,6 +13,7 @@ import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
@@ -46,6 +47,7 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
         binding.toolbar.setupWithNavController(controller,appBarConfiguration)
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main)
+        this.supportActionBar?.title = "Start Screen"
         binding.navigationLayout.setNavigationItemSelectedListener {
             val currentFragment = navHostFragment?.childFragmentManager?.fragments?.get(0)
             when (it.itemId) {
@@ -107,7 +109,18 @@ class MainActivity : AppCompatActivity() {
         val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
         val searchView = menu?.findItem(R.id.search)?.actionView as? SearchView
         searchView!!.setSearchableInfo(searchManager.getSearchableInfo(componentName))
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main)
+        val currentFragment = navHostFragment?.childFragmentManager?.fragments?.get(0)
+        if(currentFragment is SettingsFragment)
+        currentFragment.setupFragmentScreen()
         return true
+    }
+
+     fun setNightMode(value: Boolean){
+        if (value)
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+        else
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
     }
 
 }

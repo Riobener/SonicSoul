@@ -1,7 +1,8 @@
 package com.riobener.sonicsoul.ui
 
+import android.app.Activity
+import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import android.provider.DocumentsContract
@@ -9,31 +10,28 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
 import com.riobener.sonicsoul.R
 import com.riobener.sonicsoul.data.settings.Settings
 import com.riobener.sonicsoul.data.settings.SettingsName
-import com.riobener.sonicsoul.databinding.MusicListFragmentBinding
 import com.riobener.sonicsoul.ui.viewmodels.MusicViewModel
 import com.riobener.sonicsoul.ui.viewmodels.SettingsViewModel
-import com.riobener.sonicsoul.ui.viewmodels.SpotifyViewModel
+import com.riobener.sonicsoul.ui.viewmodels.OnlineServiceViewModel
 import com.riobener.sonicsoul.utils.FileUtil
 import com.riobener.sonicsoul.utils.launchAndCollectIn
-import androidx.core.app.ActivityCompat.startActivityForResult
-
 import android.media.audiofx.AudioEffect
-import androidx.appcompat.app.AppCompatDelegate
+import com.riobener.sonicsoul.MainActivity
+import com.riobener.sonicsoul.di.SonicSoulApp
+import kotlinx.android.synthetic.main.activity_main.*
 
 
 class SettingsFragment : PreferenceFragmentCompat() {
     private val viewModel by activityViewModels<SettingsViewModel>()
-    private val credentialsViewModel by activityViewModels<SpotifyViewModel>()
+    private val credentialsViewModel by activityViewModels<OnlineServiceViewModel>()
     private val musicViewModel by activityViewModels<MusicViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,10 +44,16 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupFragmentScreen()
+        setupSettings()
+    }
+
+    fun setupFragmentScreen(){
         activity?.let {
             (it as AppCompatActivity).supportActionBar?.title = "Settings"
+            if (it.toolbar?.menu?.findItem(R.id.search) != null)
+                it.toolbar.menu.removeItem(R.id.search)
         }
-        setupSettings()
     }
 
     fun setupSettings() {
@@ -80,10 +84,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                         themeAppPref?.setOnPreferenceChangeListener { preference, newValue ->
                             setting.value = newValue.toString()
                             viewModel.saveSettings(setting)
-                            if (setting.value == "true")
-                                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                            else
-                                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                            (activity as MainActivity).setNightMode(setting.value.toBooleanStrict())
                             true
                         }
                         themeAppPref?.isChecked = setting.value.toBooleanStrict()
@@ -99,6 +100,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                     servicePref?.title = "Exit from account"
                     servicePref?.setOnPreferenceClickListener {
                         credentialsViewModel.cleanToken()
+                        musicViewModel.needToReload = true
                         true
                     }
                 } else {
@@ -134,7 +136,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                     )
                 )
                 musicViewModel.saveLocalMusicToDatabase(path)
-                musicViewModel.alreadyLoaded = false
+                musicViewModel.needToReload = true
             }
         }
     }
@@ -144,4 +146,5 @@ class SettingsFragment : PreferenceFragmentCompat() {
         intent.addCategory(Intent.CATEGORY_DEFAULT)
         directorySetup.launch(intent)
     }
+
 }

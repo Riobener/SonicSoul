@@ -2,26 +2,23 @@ package com.riobener.sonicsoul.ui
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.riobener.sonicsoul.R
 import com.riobener.sonicsoul.data.music.TrackInfo
 import com.riobener.sonicsoul.databinding.MusicListFragmentBinding
 import com.riobener.sonicsoul.player.PlayerViewModel
 import com.riobener.sonicsoul.ui.adapters.MusicAdapter
 import com.riobener.sonicsoul.ui.viewmodels.MusicViewModel
-import com.riobener.sonicsoul.ui.viewmodels.SpotifyViewModel
+import com.riobener.sonicsoul.ui.viewmodels.OnlineServiceViewModel
 import com.riobener.sonicsoul.utils.launchAndCollectIn
 import com.riobener.sonicsoul.utils.toast
 import dagger.hilt.android.AndroidEntryPoint
@@ -38,7 +35,7 @@ class MusicListFragment : Fragment() {
 
     private val binding get() = _binding!!
 
-    private val viewModel by activityViewModels<SpotifyViewModel>()
+    private val viewModel by activityViewModels<OnlineServiceViewModel>()
     private val playerViewModel by activityViewModels<PlayerViewModel>()
     private val musicViewModel by activityViewModels<MusicViewModel>()
 
@@ -75,9 +72,10 @@ class MusicListFragment : Fragment() {
         viewModel.toastFlow.launchAndCollectIn(viewLifecycleOwner) {
             toast(it)
         }
-        if (musicViewModel.alreadyLoaded && !fragmentChanged) {
+        if (!musicViewModel.needToReload && !fragmentChanged) {
             fillMusicContent(music = playerViewModel.getPlaylist(), false)
         }else{
+            musicViewModel.needToReload = false
             processTokenExisting()
         }
     }

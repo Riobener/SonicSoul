@@ -12,7 +12,7 @@
     <!--custom-->
 
     <color name="theme_black">#EAF0FF</color>
-    <color name="theme_gray">#A5C0FF</color>
+    <color name="theme_gray">#009688</color>
     <color name="theme_white">#2C2C2C</color>
-    <color name="theme_light">#3F3F3F</color>
+    <color name="theme_light">#009688</color>
 </resources>

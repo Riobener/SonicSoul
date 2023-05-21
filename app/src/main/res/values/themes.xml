@@ -8,9 +8,8 @@
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/theme_light</item>
         <item name="colorSecondaryVariant">@color/theme_light</item>
-        <item name="colorOnSecondary">@color/theme_light</item>
+        <item name="colorOnSecondary">@color/theme_gray</item>
         <item name="colorAccent">@color/theme_light</item>
-        <item name="android:colorAccent">@color/theme_light</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowTranslucentStatus">true</item>
@@ -42,19 +41,6 @@
         <item name="android:textColorPrimary">@color/theme_white</item>
         <item name="android:textColorSecondary">@color/theme_white</item>
         <item name="actionMenuTextColor">@color/theme_white</item>
-    </style>
-
-    <style name="PreferencesTheme" parent="PreferenceThemeOverlay">
-        <item name="android:textColorPrimary">@color/theme_white</item>
-        <item name="android:textColorSecondary">@color/theme_white</item>
-        <item name="actionMenuTextColor">@color/theme_white</item>
-    </style>
-
-    <style name="PreferenceFragment.Material" parent="@style/Theme.MaterialComponents">
-        <item name="android:textColorPrimary">@color/theme_white</item>
-        <item name="android:textColorSecondary">@color/theme_white</item>
-        <item name="android:colorAccent">@color/theme_white</item>
-        <item name="colorAccent">@color/theme_white</item>
     </style>
 
 </resources>

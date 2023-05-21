@@ -57,10 +57,14 @@ class StartupScreenActivity : AppCompatActivity() {
     }
 
     private fun goToMainActivity() {
-        val intent = Intent(this, MainActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
-        startActivity(intent)
-        this.finish()
+        musicViewModel.loadingFlow.launchAndCollectIn(this){ loadingState ->
+            if(!loadingState) {
+                val intent = Intent(this@StartupScreenActivity, MainActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(intent)
+                this@StartupScreenActivity.finish()
+            }
+        }
     }
 
     private fun checkPermissionsAndCallDirectorySetup(permissions: List<String>) {
@@ -84,8 +88,6 @@ class StartupScreenActivity : AppCompatActivity() {
             val path = FileUtil.getFullPathFromTreeUri(treeUri = docUri, this)
             path?.let {
                 viewModel.setupStartupSettings(path)
-                musicViewModel.saveLocalMusicToDatabase(path)
-                goToMainActivity()
             }
         }
     }

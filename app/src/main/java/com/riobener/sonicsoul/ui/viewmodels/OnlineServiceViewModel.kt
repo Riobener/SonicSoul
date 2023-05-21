@@ -27,7 +27,7 @@ import net.openid.appauth.TokenRequest
 import javax.inject.Inject
 
 @HiltViewModel
-class SpotifyViewModel @Inject constructor(
+class OnlineServiceViewModel @Inject constructor(
     @ApplicationContext applicationContext: Context,
     private val authRepository: SpotifyAuthRepository,
     private val serviceCredentialsRepository: ServiceCredentialsRepository,

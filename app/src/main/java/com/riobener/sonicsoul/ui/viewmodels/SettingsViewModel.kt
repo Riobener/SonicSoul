@@ -6,6 +6,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.riobener.sonicsoul.data.settings.Settings
+import com.riobener.sonicsoul.data.settings.SettingsName
 import com.riobener.sonicsoul.data.settings.SettingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -24,6 +25,29 @@ class SettingsViewModel @Inject constructor(
     fun saveSettings(settings: Settings) {
         viewModelScope.launch {
             settingsRepository.save(settings)
+        }
+    }
+
+    fun setupStartupSettings(localPath: String) {
+        viewModelScope.launch {
+            settingsRepository.save(
+                Settings.create(
+                    name = SettingsName.LOCAL_DIRECTORY_PATH,
+                    value = localPath,
+                )
+            )
+            settingsRepository.save(
+                Settings.create(
+                    name = SettingsName.IS_GAPLESS,
+                    value = false.toString(),
+                )
+            )
+            settingsRepository.save(
+                Settings.create(
+                    name = SettingsName.THEME_APP,
+                    value = true.toString(),
+                )
+            )
         }
     }
 }

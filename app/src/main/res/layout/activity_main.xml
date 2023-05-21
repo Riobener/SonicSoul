@@ -29,6 +29,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="?actionBarSize"
                 android:background="@drawable/header_toolbar"
+                app:theme="@style/ToolBarStyle"
                 app:layout_collapseMode="pin"/>
         </LinearLayout>
 

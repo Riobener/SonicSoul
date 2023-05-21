@@ -13,12 +13,5 @@ class SpotifyMusicRepository
         return spotifyApi.tracks("50", "0").items.map { it.toTrackInfo() }
     }
 
-/*    val spotifyTracks: Flow<List<TrackInfo>> = flow {
-        while(true) {
-            val latestTracks = spotifyApi.tracks("50", "0").items.map { it.toTrackInfo() }
-            emit(latestTracks) // Emits the result of the request to the flow
-            delay(5000) // Suspends the coroutine for some time
-        }
-    }*/
 
 }

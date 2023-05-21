@@ -72,6 +72,9 @@ interface TrackDao {
     @Query("DELETE FROM track WHERE id = :id")
     suspend fun deleteById(id: UUID)
 
+    @Query("DELETE FROM track WHERE source = :source")
+    suspend fun deleteAllBySource(source: String)
+
     @Query("SELECT * FROM track WHERE source = :source")
     suspend fun findAllBySource(source: String): List<Track>
 

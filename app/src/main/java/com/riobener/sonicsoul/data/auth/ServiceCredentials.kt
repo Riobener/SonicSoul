@@ -2,6 +2,7 @@ package com.riobener.sonicsoul.data.auth
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import kotlinx.coroutines.flow.Flow
 import java.time.Instant
 import java.util.*
 
@@ -48,4 +49,7 @@ interface ServiceCredentialsDao {
 
     @Query("SELECT * FROM service_credentials WHERE service_name = :serviceName")
     suspend fun findByServiceName(serviceName: String): ServiceCredentials?
+
+    @Query("SELECT * FROM service_credentials WHERE service_name = :serviceName")
+    fun findByServiceNameFlow(serviceName: String): Flow<ServiceCredentials?>
 }

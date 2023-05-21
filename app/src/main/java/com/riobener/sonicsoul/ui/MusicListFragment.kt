@@ -38,7 +38,7 @@ class MusicListFragment : Fragment() {
 
     private val binding get() = _binding!!
 
-    private val viewModel by viewModels<SpotifyViewModel>()
+    private val viewModel by activityViewModels<SpotifyViewModel>()
     private val playerViewModel by activityViewModels<PlayerViewModel>()
     private val musicViewModel by activityViewModels<MusicViewModel>()
 
@@ -77,18 +77,16 @@ class MusicListFragment : Fragment() {
         }
         if (musicViewModel.alreadyLoaded && !fragmentChanged) {
             fillMusicContent(music = playerViewModel.getPlaylist(), false)
-        } else if (fragmentChanged) {
-            processMusicLoad()
-        } else {
+        }else{
             processTokenExisting()
         }
     }
 
-    fun isOffline(): Boolean {
+    private fun isOffline(): Boolean {
         return args.onlineOffline == "offline"
     }
 
-    fun processAuth() {
+    private fun processAuth() {
         binding.tokenEmptyWindow.isVisible = true
         binding.loginButton.isEnabled = true
         binding.loginButton.setOnClickListener {
@@ -102,7 +100,7 @@ class MusicListFragment : Fragment() {
         }
     }
 
-    fun processMusicLoad() {
+    private fun processMusicLoad() {
         binding.tokenEmptyWindow.isVisible = false
         binding.loginButton.isEnabled = false
         musicViewModel.loadMusic()
@@ -111,7 +109,7 @@ class MusicListFragment : Fragment() {
         }
     }
 
-    fun fillMusicContent(music: List<TrackInfo>, fromStart: Boolean) {
+    private fun fillMusicContent(music: List<TrackInfo>, fromStart: Boolean) {
         val musicList = music.filter { it.trackSource != null || it.localPath != null }
         musicAdapter.differ.submitList(musicList)
         playerViewModel.setPlaylist(musicList,fromStart)
@@ -163,11 +161,14 @@ class MusicListFragment : Fragment() {
             binding.musicListProgressBar.isVisible = isLoading
             binding.musicList.isVisible = !isLoading
         }
-        viewModel.getServiceCredentials()
         viewModel.serviceCredentialsFlow.launchAndCollectIn(viewLifecycleOwner) { serviceCredentials ->
-            serviceCredentials?.let {
+            if(isOffline()){
                 processMusicLoad()
-            } ?: processAuth()
+            }else{
+                serviceCredentials?.let {
+                    processMusicLoad()
+                } ?: processAuth()
+            }
         }
     }
 

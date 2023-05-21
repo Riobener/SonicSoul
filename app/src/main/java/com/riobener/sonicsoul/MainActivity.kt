@@ -59,6 +59,9 @@ class MainActivity : AppCompatActivity() {
                         if(it is MusicListFragmentDirections.ActionMusicListSelf){
                             it.onlineOffline = "offline"
                         }
+                        if(it is SettingsFragmentDirections.ActionSettingsFragmentToMusicList){
+                            it.onlineOffline = "offline"
+                        }
                         Navigation.findNavController(nav_host_fragment_content_main.requireView()).navigate(action)
                     }
                     binding.drawerLayout.closeDrawers()
@@ -70,9 +73,11 @@ class MainActivity : AppCompatActivity() {
                         is MusicListFragment -> MusicListFragmentDirections.actionMusicListSelf()
                         else -> null
                     }
-                    //val action = MusicListFragmentDirections.actionMusicListSelf()
                     action?.let{
                         if(it is MusicListFragmentDirections.ActionMusicListSelf){
+                            it.onlineOffline = "online"
+                        }
+                        if(it is SettingsFragmentDirections.ActionSettingsFragmentToMusicList){
                             it.onlineOffline = "online"
                         }
                         Navigation.findNavController(nav_host_fragment_content_main.requireView()).navigate(action)

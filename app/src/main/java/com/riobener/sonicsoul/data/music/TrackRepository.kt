@@ -20,6 +20,10 @@ class TrackRepository
         } ?: trackDao.save(track)
     }
 
+    suspend fun deleteAllBySource(source: TrackSource){
+        trackDao.deleteAllBySource(source = source.name)
+    }
+
     suspend fun findAllBySource(source: TrackSource): List<TrackInfo> {
         return trackDao.findAllBySource(source.name).map{it.toTrackInfo()}
     }

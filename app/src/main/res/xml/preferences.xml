@@ -4,30 +4,30 @@
     <PreferenceCategory
         app:title="@string/settings_audio">
         <SwitchPreferenceCompat
-            app:key="notifications"
-            app:title="Enable message notifications"/>
+            app:key="gapless"
+            app:title="@string/settings_enable_gapless"/>
         <Preference
-            app:key="notifications"
+            app:key="equalizer"
             app:title="@string/settings_change_eq"/>
     </PreferenceCategory>
     <PreferenceCategory
         app:title="@string/settings_storage">
         <Preference
-            app:key="feedback"
+            app:key="local_storage"
             app:title="@string/settings_change_local_directory"/>
     </PreferenceCategory>
 
     <PreferenceCategory
         app:title="@string/settings_service">
         <Preference
-            app:key="feedback"
+            app:key="online_service"
             app:title="Default"/>
     </PreferenceCategory>
 
     <PreferenceCategory
         app:title="@string/settings_visual">
         <SwitchPreferenceCompat
-            app:key="notifications"
+            app:key="theme_app"
             app:title="@string/settings_change_visual"/>
     </PreferenceCategory>
 </PreferenceScreen>

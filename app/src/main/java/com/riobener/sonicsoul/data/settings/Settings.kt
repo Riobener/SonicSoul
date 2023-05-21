@@ -25,7 +25,9 @@ data class Settings(
 }
 
 enum class SettingsName {
-    LOCAL_DIRECTORY_PATH
+    LOCAL_DIRECTORY_PATH,
+    IS_GAPLESS,
+    THEME_APP,
     //list of other settings...
 }
 

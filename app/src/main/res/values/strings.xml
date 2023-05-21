@@ -35,7 +35,7 @@
     <string name="settings_enable_gapless">Enable gapless effect</string>
     <string name="settings_change_local_directory">Change local music directory</string>
     <string name="settings_change_visual">Change app color theme</string>
-    <string name="settings_change_eq">Change equaliser</string>
+    <string name="settings_change_eq">Change equalizer</string>
 
 
     <string name="need_local_setup_rus">В целях первичной настройки приложения, выберите папку, где расположена ваша локальная музыка</string>

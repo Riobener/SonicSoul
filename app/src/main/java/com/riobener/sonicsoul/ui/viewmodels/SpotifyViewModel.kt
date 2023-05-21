@@ -44,18 +44,17 @@ class SpotifyViewModel @Inject constructor(
     val toastFlow: Flow<Int>
         get() = toastEventChannel.receiveAsFlow()
 
-    private val serviceCredentialsMutableStateFlow = MutableStateFlow<ServiceCredentials?>(null)
     val serviceCredentialsFlow: Flow<ServiceCredentials?>
-        get() = serviceCredentialsMutableStateFlow.asStateFlow()
+        get() = serviceCredentialsRepository.findByServiceNameFlow(ServiceName.SPOTIFY)
 
     //Loading
     private val loadingMutableStateFlow = MutableStateFlow(false)
     val loadingFlow: Flow<Boolean>
         get() = loadingMutableStateFlow.asStateFlow()
 
-    fun getServiceCredentials(){
+    fun cleanToken(){
         viewModelScope.launch {
-            serviceCredentialsMutableStateFlow.value = serviceCredentialsRepository.findByServiceName(ServiceName.SPOTIFY)
+            serviceCredentialsRepository.deleteByServiceName(ServiceName.SPOTIFY)
         }
     }
 

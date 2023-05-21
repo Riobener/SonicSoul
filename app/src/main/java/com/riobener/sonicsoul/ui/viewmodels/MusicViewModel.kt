@@ -26,6 +26,8 @@ import android.util.Log
 import com.riobener.sonicsoul.data.music.Track
 import com.riobener.sonicsoul.data.music.TrackSource
 import com.riobener.sonicsoul.utils.HashUtils
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.security.MessageDigest
 import java.util.*
@@ -52,10 +54,10 @@ class MusicViewModel @Inject constructor(
     var alreadyLoaded = false
     var isOffline = false
 
-    fun loadMusic(){
-        if(isOffline){
+    fun loadMusic() {
+        if (isOffline) {
             loadOfflineMusic()
-        }else{
+        } else {
             loadOnlineMusic()
         }
     }
@@ -92,26 +94,34 @@ class MusicViewModel @Inject constructor(
         }
     }
 
-    fun saveLocalMusicToDatabase() {
+    fun saveLocalMusicToDatabase(localPath: String) {
         viewModelScope.launch {
+            withContext(Dispatchers.Default) {
+                trackRepository.deleteAllBySource(TrackSource.LOCAL)
+            }
             loadingMutableStateFlow.value = true
-            settingsRepository.findBySettingsName(settingsName = SettingsName.LOCAL_DIRECTORY_PATH)?.value?.let { path ->
-                val mmr = MediaMetadataRetriever()
-                Log.d("Files", "Path: $path")
-                val formatedFilePaths = mutableListOf<String>()
-                val directory = File(path)
-                val files = directory.listFiles()
-                files?.let {
-                    Log.d("Files", "Size: " + files.size)
-                    for (i in files.indices) {
-                        Log.d("Files", "FileName:" + files[i].getName())
-                        formatedFilePaths.add(path + "/" + files[i].getName())
-                    }
+
+            val mmr = MediaMetadataRetriever()
+            Log.d("Files", "Path: $localPath")
+            val formatedFilePaths = mutableListOf<FilePathWithName>()
+            val directory = File(localPath)
+            val files = directory.listFiles()
+            files?.let {
+                Log.d("Files", "Size: " + files.size)
+                for (i in files.indices) {
+                    Log.d("Files", "FileName:" + files[i].getName())
+                    formatedFilePaths.add(FilePathWithName(localPath + "/" + files[i].getName(), files[i].getName()))
                 }
-                formatedFilePaths.forEach { musicPath ->
-                    mmr.setDataSource(musicPath)
-                    val artist = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST)
-                    val title = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE)
+            }
+            formatedFilePaths.forEach { musicPath ->
+                if (musicPath.name.contains(".mp3", ignoreCase = true) || musicPath.name.contains(
+                        ".wav",
+                        ignoreCase = true
+                    )
+                ) {
+                    mmr.setDataSource(musicPath.path)
+                    val artist = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST) ?: "NoAuthor"
+                    val title = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE) ?: musicPath.name
                     val date = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DATE)
                     val bitrate = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_BITRATE)
                     val duration = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
@@ -119,12 +129,12 @@ class MusicViewModel @Inject constructor(
                     trackRepository.save(
                         Track.create(
                             externalId = null,
-                            title = title.orEmpty(),
-                            artist = artist.orEmpty(),
+                            title = title,
+                            artist = artist,
                             source = TrackSource.LOCAL,
                             imageSource = null,
                             bigImageSource = null,
-                            localPath = musicPath,
+                            localPath = musicPath.path,
                             hash = hash
                         )
                     )
@@ -134,5 +144,10 @@ class MusicViewModel @Inject constructor(
         }
 
     }
+
+    data class FilePathWithName(
+        val path: String,
+        val name: String,
+    )
 
 }

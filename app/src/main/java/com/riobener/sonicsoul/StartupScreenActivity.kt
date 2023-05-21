@@ -15,6 +15,7 @@ import android.provider.DocumentsContract
 
 import android.net.Uri
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatDelegate
 import com.riobener.sonicsoul.data.settings.Settings
 import com.riobener.sonicsoul.data.settings.SettingsName
 import com.riobener.sonicsoul.ui.viewmodels.MusicViewModel
@@ -38,9 +39,15 @@ class StartupScreenActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = SplashScreenBinding.inflate(layoutInflater)
-        viewModel.settings.launchAndCollectIn(this) {
-            it.firstOrNull { it.name == SettingsName.LOCAL_DIRECTORY_PATH }?.let {
-                musicViewModel.saveLocalMusicToDatabase()
+        viewModel.settings.launchAndCollectIn(this) { settings ->
+            settings.firstOrNull { it.name == SettingsName.LOCAL_DIRECTORY_PATH }?.let { local ->
+                musicViewModel.saveLocalMusicToDatabase(local.value)
+                settings.firstOrNull { it.name == SettingsName.THEME_APP }?.let {
+                    if (it.value == "true")
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                    else
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                }
                 goToMainActivity()
             } ?: setContentView(binding.root)
         }
@@ -76,13 +83,8 @@ class StartupScreenActivity : AppCompatActivity() {
             val docUri: Uri = DocumentsContract.buildDocumentUriUsingTree(uri, DocumentsContract.getTreeDocumentId(uri))
             val path = FileUtil.getFullPathFromTreeUri(treeUri = docUri, this)
             path?.let {
-                viewModel.saveSettings(
-                    Settings.create(
-                        name = SettingsName.LOCAL_DIRECTORY_PATH,
-                        value = path
-                    )
-                )
-                musicViewModel.saveLocalMusicToDatabase()
+                viewModel.setupStartupSettings(path)
+                musicViewModel.saveLocalMusicToDatabase(path)
                 goToMainActivity()
             }
         }

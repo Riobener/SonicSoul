@@ -41,6 +41,10 @@
         android:id="@+id/SettingsFragment"
         android:name="com.riobener.sonicsoul.ui.SettingsFragment"
         android:label="SettingsFragment" >
+        <argument
+            android:name="online_offline"
+            app:argType="string"
+            android:defaultValue="online"/>
         <action
             android:id="@+id/action_settingsFragment_to_MusicList"
             app:destination="@id/MusicList"

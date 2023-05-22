@@ -1,4 +1,4 @@
-package com.riobener.sonicsoul.ui
+package com.riobener.sonicsoul.ui.fragments
 
 import android.content.Intent
 import android.os.Bundle

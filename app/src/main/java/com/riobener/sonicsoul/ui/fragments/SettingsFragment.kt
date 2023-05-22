@@ -1,7 +1,5 @@
-package com.riobener.sonicsoul.ui
+package com.riobener.sonicsoul.ui.fragments
 
-import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -24,8 +22,7 @@ import com.riobener.sonicsoul.ui.viewmodels.OnlineServiceViewModel
 import com.riobener.sonicsoul.utils.FileUtil
 import com.riobener.sonicsoul.utils.launchAndCollectIn
 import android.media.audiofx.AudioEffect
-import com.riobener.sonicsoul.MainActivity
-import com.riobener.sonicsoul.di.SonicSoulApp
+import com.riobener.sonicsoul.ui.MainActivity
 import kotlinx.android.synthetic.main.activity_main.*
 
 

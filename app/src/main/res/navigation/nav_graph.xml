@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/MusicList"
-        android:name="com.riobener.sonicsoul.ui.MusicListFragment"
+        android:name="com.riobener.sonicsoul.ui.fragments.MusicListFragment"
         android:label="Online music"
         tools:layout="@layout/music_list_fragment">
         <argument
@@ -27,7 +27,7 @@
     </fragment>
     <fragment
         android:id="@+id/MusicPlayer"
-        android:name="com.riobener.sonicsoul.ui.MusicPlayerFragment"
+        android:name="com.riobener.sonicsoul.ui.fragments.MusicPlayerFragment"
         android:label="Local music"
         tools:layout="@layout/music_player">
         <action
@@ -39,7 +39,7 @@
     </fragment>
     <fragment
         android:id="@+id/SettingsFragment"
-        android:name="com.riobener.sonicsoul.ui.SettingsFragment"
+        android:name="com.riobener.sonicsoul.ui.fragments.SettingsFragment"
         android:label="SettingsFragment" >
         <argument
             android:name="online_offline"

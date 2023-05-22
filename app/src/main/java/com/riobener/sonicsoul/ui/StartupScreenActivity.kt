@@ -1,4 +1,4 @@
-package com.riobener.sonicsoul
+package com.riobener.sonicsoul.ui
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -16,7 +16,6 @@ import android.provider.DocumentsContract
 import android.net.Uri
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatDelegate
-import com.riobener.sonicsoul.data.settings.Settings
 import com.riobener.sonicsoul.data.settings.SettingsName
 import com.riobener.sonicsoul.ui.viewmodels.MusicViewModel
 import com.riobener.sonicsoul.ui.viewmodels.SettingsViewModel

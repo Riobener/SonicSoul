@@ -15,7 +15,7 @@ import com.bumptech.glide.Glide
 import com.riobener.sonicsoul.R
 import com.riobener.sonicsoul.data.music.TrackInfo
 import com.riobener.sonicsoul.databinding.MusicListFragmentBinding
-import com.riobener.sonicsoul.player.PlayerViewModel
+import com.riobener.sonicsoul.ui.viewmodels.PlayerViewModel
 import com.riobener.sonicsoul.ui.adapters.MusicAdapter
 import com.riobener.sonicsoul.ui.viewmodels.MusicViewModel
 import com.riobener.sonicsoul.ui.viewmodels.OnlineServiceViewModel

@@ -42,9 +42,11 @@ class PlayerViewModel @Inject constructor(
     private val _isLooping: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val isLooping: StateFlow<Boolean> = _isLooping
 
+    private val playlist: MutableStateFlow<MutableList<TrackInfo>> = MutableStateFlow(mutableListOf())
+    val playlistFlow: StateFlow<MutableList<TrackInfo>>  = playlist
+
     private var currentMediaSource: MediaSource? = null
 
-    private val playlist: MutableList<TrackInfo> = mutableListOf()
     private var currentTrackIndex: Int = -1
 
     init {
@@ -74,7 +76,7 @@ class PlayerViewModel @Inject constructor(
 
     fun setCurrentTrack() {
         if (currentTrackIndex != -1) {
-            _currentTrack.value = playlist[currentTrackIndex]
+            _currentTrack.value = playlist.value[currentTrackIndex]
         } else {
             _currentTrack.value = null
         }
@@ -102,43 +104,35 @@ class PlayerViewModel @Inject constructor(
         startPlayback()
         exoPlayer.playWhenReady = true
         _isPlaying.value = exoPlayer.playWhenReady
-        playlist[currentTrackIndex].isPlaying = true
+        playlist.value[currentTrackIndex].isPlaying = true
     }
 
     private fun pause() {
         stopPlayback()
         exoPlayer.playWhenReady = false
         _isPlaying.value = false
-        playlist[currentTrackIndex].isPlaying = false
+            playlist.value[currentTrackIndex].isPlaying = false
     }
 
     fun chooseAndPlayTrack(trackInfo: TrackInfo) {
-        getPlaylist().forEach{
-            Log.d("LIST BEFORE", it.isPlaying.toString())
-        }
         stopPlayback()
-        val index = playlist.indexOf(trackInfo)
+        val index = playlist.value.indexOf(trackInfo)
         if (index == currentTrackIndex && exoPlayer.isPlaying) {
             pause()
         } else if (index == currentTrackIndex && !exoPlayer.isPlaying) {
             play()
         } else {
             if (currentTrackIndex != -1){
-                playlist[currentTrackIndex].isPlaying = false
+                playlist.value[currentTrackIndex].isPlaying = false
             }
             currentTrackIndex = index
-            val mediaSource = trackToMediaSource(playlist[currentTrackIndex])
+            val mediaSource = trackToMediaSource(playlist.value[currentTrackIndex])
             //TODO Gapless effect
             /*Thread.sleep(500)*/
             exoPlayer.prepare(mediaSource)
             currentMediaSource = mediaSource
             play()
         }
-        Log.d("LIST AFTER", "\n")
-        getPlaylist().forEach{
-            Log.d("LIST AFTER", it.isPlaying.toString())
-        }
-        Log.d("LIST AFTER", "\n")
         setCurrentTrack()
     }
 
@@ -146,13 +140,13 @@ class PlayerViewModel @Inject constructor(
         if (currentMediaSource == null) return
         stopPlayback()
         if (currentTrackIndex != -1){
-            playlist[currentTrackIndex].isPlaying = false
+            playlist.value[currentTrackIndex].isPlaying = false
         }
         currentTrackIndex++
-        if (currentTrackIndex > playlist.size - 1) {
+        if (currentTrackIndex > playlist.value.size - 1) {
             currentTrackIndex = 0
         }
-        val mediaSource = trackToMediaSource(playlist[currentTrackIndex])
+        val mediaSource = trackToMediaSource(playlist.value[currentTrackIndex])
         exoPlayer.prepare(mediaSource)
         currentMediaSource = mediaSource
         play()
@@ -162,13 +156,13 @@ class PlayerViewModel @Inject constructor(
     fun playPreviousTrack() {
         stopPlayback()
         if (currentTrackIndex != -1){
-            playlist[currentTrackIndex].isPlaying = false
+            playlist.value[currentTrackIndex].isPlaying = false
         }
         currentTrackIndex--
         if (currentTrackIndex < 0) {
-            currentTrackIndex = playlist.size - 1
+            currentTrackIndex = playlist.value.size - 1
         }
-        val mediaSource = trackToMediaSource(playlist[currentTrackIndex])
+        val mediaSource = trackToMediaSource(playlist.value[currentTrackIndex])
         exoPlayer.prepare(mediaSource)
         currentMediaSource = mediaSource
         play()
@@ -179,15 +173,14 @@ class PlayerViewModel @Inject constructor(
         _isLooping.value = looping
     }
 
-    fun setPlaylist(newPlaylist: List<TrackInfo>, fromStart: Boolean) {
-        if(fromStart)
-            currentTrackIndex = -1
-        playlist.clear()
-        playlist.addAll(newPlaylist)
-    }
-
-    fun getPlaylist() : MutableList<TrackInfo>{
-        return playlist
+    fun setPlaylist(newplaylist: List<TrackInfo>) {
+        newplaylist.indexOfFirst { it.title == _currentTrack.value?.title && it.artist == _currentTrack.value?.artist }.let{
+            currentTrackIndex = it
+            if(currentTrackIndex != -1){
+                newplaylist[currentTrackIndex].isPlaying = _isPlaying.value
+            }
+        }
+        playlist.value = newplaylist as MutableList<TrackInfo>
     }
 
     private fun trackToMediaSource(trackInfo: TrackInfo): MediaSource {

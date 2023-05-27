@@ -1,5 +1,7 @@
 package com.riobener.sonicsoul.data.music
 
+import com.riobener.sonicsoul.data.music.spotify.SpotifyApi
+import com.riobener.sonicsoul.data.music.spotify.toTrackInfo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -7,7 +9,12 @@ import javax.inject.Inject
 class TrackRepository
 @Inject constructor(
     private val trackDao: TrackDao,
+    private val spotifyApi: SpotifyApi,
 ) {
+    suspend fun getOnlineTracks(): List<TrackInfo> {
+        return spotifyApi.tracks("50", "0").items.map { it.toTrackInfo() }
+    }
+
     suspend fun save(track: Track) {
         trackDao.findByHash(track.hash)?.let {
             it.title = track.title
@@ -24,7 +31,7 @@ class TrackRepository
         trackDao.deleteAllBySource(source = source.name)
     }
 
-    suspend fun findAllBySource(source: TrackSource): List<TrackInfo> {
+    suspend fun findLocalTrackBySource(source: TrackSource): List<TrackInfo> {
         return trackDao.findAllBySource(source.name).map{it.toTrackInfo()}
     }
 }

@@ -44,6 +44,7 @@ class MusicListFragment : Fragment() {
     private lateinit var musicAdapter: MusicAdapter
 
     private var fragmentChanged: Boolean = false
+    private var needSearchUpdate: Boolean = true
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -73,10 +74,19 @@ class MusicListFragment : Fragment() {
             toast(it)
         }
         if (!musicViewModel.needToReload && !fragmentChanged) {
-            fillMusicContent(music = playerViewModel.getPlaylist(), false)
-        }else{
+            needSearchUpdate = false
+            fillMusicContent(music = playerViewModel.playlistFlow.value)
+        } else {
             musicViewModel.needToReload = false
             processTokenExisting()
+        }
+        musicViewModel.musicInfoFlow.launchAndCollectIn(viewLifecycleOwner) {
+            fillMusicContent(music = it)
+        }
+        musicViewModel.musicSearch.launchAndCollectIn(viewLifecycleOwner) {
+            if (needSearchUpdate)
+                fillMusicContent(music = it)
+            needSearchUpdate = true
         }
     }
 
@@ -102,16 +112,11 @@ class MusicListFragment : Fragment() {
         binding.tokenEmptyWindow.isVisible = false
         binding.loginButton.isEnabled = false
         musicViewModel.loadMusic()
-        musicViewModel.musicInfoFlow.launchAndCollectIn(viewLifecycleOwner) { music ->
-            fillMusicContent(music, true)
-        }
     }
 
-    private fun fillMusicContent(music: List<TrackInfo>, fromStart: Boolean) {
+    private fun fillMusicContent(music: List<TrackInfo>) {
         val musicList = music.filter { it.trackSource != null || it.localPath != null }
-        musicAdapter.differ.submitList(musicList)
-        playerViewModel.setPlaylist(musicList,fromStart)
-        musicAdapter.notifyDataSetChanged()
+        playerViewModel.setPlaylist(musicList)
     }
 
     fun setupMiniPlayer() {
@@ -160,9 +165,9 @@ class MusicListFragment : Fragment() {
             binding.musicList.isVisible = !isLoading
         }
         viewModel.serviceCredentialsFlow.launchAndCollectIn(viewLifecycleOwner) { serviceCredentials ->
-            if(isOffline()){
+            if (isOffline()) {
                 processMusicLoad()
-            }else{
+            } else {
                 serviceCredentials?.let {
                     processMusicLoad()
                 } ?: processAuth()
@@ -199,7 +204,11 @@ class MusicListFragment : Fragment() {
             adapter = musicAdapter
             layoutManager = LinearLayoutManager(activity)
         }
-        playerViewModel.currentTrack.launchAndCollectIn(viewLifecycleOwner) {
+        playerViewModel.playlistFlow.launchAndCollectIn(viewLifecycleOwner) {
+            musicAdapter.differ.submitList(it)
+            musicAdapter.notifyDataSetChanged()
+        }
+        playerViewModel.currentTrack.launchAndCollectIn(viewLifecycleOwner){
             musicAdapter.notifyDataSetChanged()
         }
     }

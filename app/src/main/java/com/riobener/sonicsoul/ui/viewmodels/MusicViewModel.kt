@@ -2,42 +2,30 @@ package com.riobener.sonicsoul.ui.viewmodels
 
 import android.content.Context
 import android.media.MediaMetadataRetriever
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.riobener.sonicsoul.R
-import com.riobener.sonicsoul.data.auth.ServiceCredentialsRepository
-import com.riobener.sonicsoul.data.auth.spotify.SpotifyAuthRepository
 import com.riobener.sonicsoul.data.music.TrackInfo
 import com.riobener.sonicsoul.data.music.TrackRepository
-import com.riobener.sonicsoul.data.music.spotify.SpotifyMusicRepository
-import com.riobener.sonicsoul.data.settings.SettingsName
 import com.riobener.sonicsoul.data.settings.SettingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import android.os.Environment
 import android.util.Log
 import com.riobener.sonicsoul.data.music.Track
 import com.riobener.sonicsoul.data.music.TrackSource
 import com.riobener.sonicsoul.utils.HashUtils
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.flow.filter
 import java.io.File
-import java.security.MessageDigest
 import java.util.*
 
 
 @HiltViewModel
 class MusicViewModel @Inject constructor(
     @ApplicationContext applicationContext: Context,
-    private val spotifyMusicRepository: SpotifyMusicRepository,
     private val trackRepository: TrackRepository,
     private val settingsRepository: SettingsRepository,
 ) : ViewModel() {
@@ -52,10 +40,19 @@ class MusicViewModel @Inject constructor(
     val musicInfoFlow: Flow<List<TrackInfo>>
         get() = musicInfoMutableStateFlow.asStateFlow()
 
+    //SearchMusic
+    private val musicSearchMutableStateFlow = MutableStateFlow<List<TrackInfo>>(emptyList())
+    val musicSearch: Flow<List<TrackInfo>>
+        get() = musicSearchMutableStateFlow.asStateFlow()
+
     var needToReload = true
     var isOffline = false
 
-    fun loadMusic() {
+    fun loadMusic(withRefresh: Boolean = false) {
+        if(withRefresh){
+            musicInfoMutableStateFlow.value = emptyList()
+            musicSearchMutableStateFlow.value = emptyList()
+        }
         if (isOffline) {
             loadOfflineMusic()
         } else {
@@ -63,11 +60,20 @@ class MusicViewModel @Inject constructor(
         }
     }
 
+    fun searchMusic(query: String?) {
+        query?.lowercase()?.let { querySearch ->
+            musicSearchMutableStateFlow.value = musicInfoMutableStateFlow.value.filter {
+                it.artist.lowercase().contains(querySearch) || it.title.lowercase().contains(querySearch)
+            }
+            Log.d("SEARCH", musicSearchMutableStateFlow.value.toString())
+        }
+    }
+
     fun loadOnlineMusic() {
         viewModelScope.launch {
             loadingMutableStateFlow.value = true
             runCatching {
-                spotifyMusicRepository.getTracks()
+                trackRepository.getOnlineTracks()
             }.onSuccess {
                 musicInfoMutableStateFlow.value = it
                 loadingMutableStateFlow.value = false
@@ -82,7 +88,7 @@ class MusicViewModel @Inject constructor(
         viewModelScope.launch {
             loadingMutableStateFlow.value = true
             runCatching {
-                trackRepository.findAllBySource(TrackSource.LOCAL)
+                trackRepository.findLocalTrackBySource(TrackSource.LOCAL)
             }.onSuccess {
                 musicInfoMutableStateFlow.value = it
                 loadingMutableStateFlow.value = false

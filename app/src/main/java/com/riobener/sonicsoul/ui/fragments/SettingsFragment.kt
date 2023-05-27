@@ -50,6 +50,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
             (it as AppCompatActivity).supportActionBar?.title = "Settings"
             if (it.toolbar?.menu?.findItem(R.id.search) != null)
                 it.toolbar.menu.removeItem(R.id.search)
+            if (it.toolbar?.menu?.findItem(R.id.sort) != null)
+                it.toolbar.menu.removeItem(R.id.sort)
         }
     }
 

@@ -45,14 +45,14 @@ class MusicPlayerFragment : Fragment() {
             }
         }
         playerViewModel.trackDuration.launchAndCollectIn(this) {
-            val seconds = ((it / 1000)).toInt()
+            val seconds = ((it / 1000) % 60).toInt()
             val minutes = (seconds % 3600) / 60;
             val formattedTime = String.format("%02d:%02d", minutes, seconds)
             binding.songProgress.max = seconds
             binding.songDurationTotal.text = formattedTime
         }
         playerViewModel.currentPosition.launchAndCollectIn(this) {
-            val seconds = ((it / 1000)).toInt()
+            val seconds = ((it / 1000) % 60).toInt()
             val minutes = (seconds % 3600) / 60;
             val formattedTime = String.format("%02d:%02d", minutes, seconds)
             binding.songProgress.progress = seconds

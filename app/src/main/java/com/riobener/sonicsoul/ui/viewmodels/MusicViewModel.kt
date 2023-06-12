@@ -27,7 +27,6 @@ import java.util.*
 class MusicViewModel @Inject constructor(
     @ApplicationContext applicationContext: Context,
     private val trackRepository: TrackRepository,
-    private val settingsRepository: SettingsRepository,
 ) : ViewModel() {
 
     //Loading
@@ -67,6 +66,10 @@ class MusicViewModel @Inject constructor(
             }
             Log.d("SEARCH", musicSearchMutableStateFlow.value.toString())
         }
+    }
+
+    fun sortMusic() {
+        musicInfoMutableStateFlow.value = musicInfoMutableStateFlow.value.reversed()
     }
 
     fun loadOnlineMusic() {

@@ -154,8 +154,8 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/song_controls_container"
         android:layout_alignParentBottom="true"
-        android:layout_marginTop="50dp"
         android:layout_marginBottom="30dp"
+        android:gravity="center"
         android:paddingTop="20dp">
 
         <TextView
@@ -186,7 +186,7 @@
             android:id="@+id/song_bitrate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
+            android:layout_marginTop="30dp"
             android:gravity="center_horizontal"
             android:text="320 kbps"
             android:textColor="@color/theme_white" />

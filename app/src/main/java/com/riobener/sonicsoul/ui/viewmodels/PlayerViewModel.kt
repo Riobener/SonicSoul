@@ -111,7 +111,7 @@ class PlayerViewModel @Inject constructor(
         stopPlayback()
         exoPlayer.playWhenReady = false
         _isPlaying.value = false
-            playlist.value[currentTrackIndex].isPlaying = false
+        playlist.value[currentTrackIndex].isPlaying = false
     }
 
     fun chooseAndPlayTrack(trackInfo: TrackInfo) {

@@ -16,6 +16,7 @@ import com.riobener.sonicsoul.databinding.MusicPlayerBinding
 import com.riobener.sonicsoul.ui.viewmodels.PlayerViewModel
 import com.riobener.sonicsoul.ui.viewmodels.MusicViewModel
 import com.riobener.sonicsoul.utils.launchAndCollectIn
+import java.util.concurrent.TimeUnit
 
 class MusicPlayerFragment : Fragment() {
 
@@ -45,17 +46,20 @@ class MusicPlayerFragment : Fragment() {
             }
         }
         playerViewModel.trackDuration.launchAndCollectIn(this) {
-            val seconds = ((it / 1000) % 60).toInt()
-            val minutes = (seconds % 3600) / 60;
-            val formattedTime = String.format("%02d:%02d", minutes, seconds)
+            val seconds = ((it / 1000)).toInt()
+            val formattedTime = String.format("%02d:%02d", TimeUnit.MILLISECONDS.toMinutes(it),
+                TimeUnit.MILLISECONDS.toSeconds(it) -
+                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(it))
+            )
             binding.songProgress.max = seconds
             binding.songDurationTotal.text = formattedTime
         }
         playerViewModel.currentPosition.launchAndCollectIn(this) {
-            val seconds = ((it / 1000) % 60).toInt()
-            val minutes = (seconds % 3600) / 60;
-            val formattedTime = String.format("%02d:%02d", minutes, seconds)
-            binding.songProgress.progress = seconds
+            val formattedTime = String.format("%02d:%02d", TimeUnit.MILLISECONDS.toMinutes(it),
+                TimeUnit.MILLISECONDS.toSeconds(it) -
+                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(it))
+            )
+            binding.songProgress.progress = ((it / 1000)).toInt()
             binding.songDurationPlayed.text = formattedTime
         }
         binding.songBack.setOnClickListener {

@@ -112,7 +112,6 @@ class MainActivity : AppCompatActivity() {
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 musicViewModel.searchMusic(query)
-                Log.d("SEARCH", "$query")
                 return false
             }
 
@@ -128,10 +127,13 @@ class MainActivity : AppCompatActivity() {
 
             override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
                 musicViewModel.loadMusic(withRefresh = true)
-                Log.d("SEARCH", "$2222")
                 return true
             }
         })
+        menu.findItem(R.id.sort).setOnMenuItemClickListener {
+            musicViewModel.sortMusic()
+            true
+        }
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main)
         val currentFragment = navHostFragment?.childFragmentManager?.fragments?.get(0)
         if (currentFragment is SettingsFragment)

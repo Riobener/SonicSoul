@@ -2,8 +2,9 @@ package com.riobener.sonicsoul.data.music
 
 import com.riobener.sonicsoul.data.music.spotify.SpotifyApi
 import com.riobener.sonicsoul.data.music.spotify.toTrackInfo
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
+import okhttp3.OkHttpClient
+import java.lang.Exception
+import java.util.*
 import javax.inject.Inject
 
 class TrackRepository
@@ -12,7 +13,19 @@ class TrackRepository
     private val spotifyApi: SpotifyApi,
 ) {
     suspend fun getOnlineTracks(): List<TrackInfo> {
-        return spotifyApi.tracks("50", "0").items.map { it.toTrackInfo() }
+        val offlineTracks = findLocalTrackBySource(TrackSource.SPOTIFY) as MutableList
+        return try{
+            val onlineTracks = spotifyApi.tracks("50", "0").items.map { it.toTrackInfo() } as MutableList
+            offlineTracks.forEach { offlineValue ->
+                val conditionValue = onlineTracks.firstOrNull{ it.externalId == offlineValue.externalId }
+                if(conditionValue != null){
+                    onlineTracks[onlineTracks.indexOf(conditionValue)] = offlineValue
+                }
+            }
+            onlineTracks
+        }catch (e: Exception){
+            offlineTracks
+        }
     }
 
     suspend fun save(track: Track) {
@@ -29,6 +42,10 @@ class TrackRepository
 
     suspend fun deleteAllBySource(source: TrackSource){
         trackDao.deleteAllBySource(source = source.name)
+    }
+
+    suspend fun deleteById(id: UUID){
+        trackDao.deleteById(id)
     }
 
     suspend fun findLocalTrackBySource(source: TrackSource): List<TrackInfo> {

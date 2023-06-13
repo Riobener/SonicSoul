@@ -20,6 +20,9 @@
     <string name="login_text">Log in</string>
     <string name="setup_local_directory">Show</string>
 
+    <string name="delete_song">Delete</string>
+    <string name="save_song">Save</string>
+
     <string name="navigation_drawer_close">Close</string>
     <string name="navigation_drawer_open">Open</string>
 

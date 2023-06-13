@@ -17,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_toEndOf="@+id/music_img"
-        android:layout_toStartOf="@+id/music_options"
+        android:layout_toStartOf="@+id/download_marker"
         android:adjustViewBounds="true"
         android:scaleType="fitXY">
     </ImageView>
@@ -28,7 +28,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:layout_toEndOf="@id/music_img"
-        android:layout_toStartOf="@+id/music_options"
+        android:layout_toStartOf="@+id/download_marker"
         android:text="Music title"
         android:textColor="@color/theme_white"
         android:ellipsize="end"
@@ -42,12 +42,22 @@
         android:layout_alignBottom="@id/music_img"
         android:layout_marginBottom="5dp"
         android:layout_toEndOf="@id/music_img"
-        android:layout_toStartOf="@+id/music_options"
+        android:layout_toStartOf="@+id/download_marker"
         android:text="Author"
         android:textColor="@color/theme_light"
         android:ellipsize="end"
         android:maxLines="1"
         android:textSize="@dimen/music_item_author" />
+
+    <ImageView
+        android:id="@+id/download_marker"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_centerVertical="true"
+        android:layout_toStartOf="@+id/music_options"
+        android:src="@drawable/download_marker"
+        app:tint="@color/theme_white"
+        android:visibility="gone"/>
 
     <ImageButton
         android:id="@+id/music_options"

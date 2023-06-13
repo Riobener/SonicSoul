@@ -115,7 +115,7 @@ class MusicListFragment : Fragment() {
     }
 
     private fun fillMusicContent(music: List<TrackInfo>) {
-        val musicList = music.filter { it.trackSource != null || it.localPath != null }
+        val musicList = music.filter { it.onlineSource != null || it.localPath != null }
         playerViewModel.setPlaylist(musicList)
     }
 
@@ -200,6 +200,14 @@ class MusicListFragment : Fragment() {
         musicAdapter.onItemClick = {
             playerViewModel.chooseAndPlayTrack(it)
         }
+        musicAdapter.onSongDownload = {
+            musicViewModel.saveSong(it)
+        }
+        musicAdapter.onSongDelete = { track ->
+            track.id?.let{
+                musicViewModel.deleteSong(it)
+            }
+        }
         binding.musicList.apply {
             adapter = musicAdapter
             layoutManager = LinearLayoutManager(activity)
@@ -211,6 +219,7 @@ class MusicListFragment : Fragment() {
         playerViewModel.currentTrack.launchAndCollectIn(viewLifecycleOwner){
             musicAdapter.notifyDataSetChanged()
         }
+
     }
 
     private fun openAuthPage(intent: Intent) {

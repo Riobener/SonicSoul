@@ -15,6 +15,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import android.util.Log
+import com.google.android.exoplayer2.database.ExoDatabaseProvider
+import com.google.android.exoplayer2.upstream.cache.CacheDataSource
+import com.google.android.exoplayer2.upstream.cache.LeastRecentlyUsedCacheEvictor
+import com.google.android.exoplayer2.upstream.cache.SimpleCache
 import com.riobener.sonicsoul.data.music.Track
 import com.riobener.sonicsoul.data.music.TrackSource
 import com.riobener.sonicsoul.utils.HashUtils
@@ -28,7 +32,6 @@ class MusicViewModel @Inject constructor(
     @ApplicationContext applicationContext: Context,
     private val trackRepository: TrackRepository,
 ) : ViewModel() {
-
     //Loading
     private val loadingMutableStateFlow = MutableStateFlow(false)
     val loadingFlow: Flow<Boolean>
@@ -48,7 +51,7 @@ class MusicViewModel @Inject constructor(
     var isOffline = false
 
     fun loadMusic(withRefresh: Boolean = false) {
-        if(withRefresh){
+        if (withRefresh) {
             musicInfoMutableStateFlow.value = emptyList()
             musicSearchMutableStateFlow.value = emptyList()
         }
@@ -99,6 +102,34 @@ class MusicViewModel @Inject constructor(
                 loadingMutableStateFlow.value = false
                 musicInfoMutableStateFlow.value = emptyList()
             }
+        }
+    }
+
+    fun saveSong(trackInfo: TrackInfo) {
+        trackInfo.localPath = trackInfo.onlineSource
+        viewModelScope.launch {
+            trackInfo.localPath?.let {
+                trackRepository.save(
+                    Track.create(
+                        externalId = trackInfo.externalId,
+                        title = trackInfo.title,
+                        artist = trackInfo.artist,
+                        source = trackInfo.trackSource,
+                        imageSource = trackInfo.imageSource,
+                        bigImageSource = trackInfo.bigImageSource,
+                        localPath = it,
+                        hash = HashUtils.hashStringWithSHA256(trackInfo.artist + trackInfo.title + trackInfo.externalId)
+                    )
+                )
+                loadMusic()
+            }
+        }
+    }
+
+    fun deleteSong(id: UUID) {
+        viewModelScope.launch {
+            trackRepository.deleteById(id)
+            loadMusic()
         }
     }
 

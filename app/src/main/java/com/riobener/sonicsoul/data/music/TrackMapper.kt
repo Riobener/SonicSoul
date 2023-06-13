@@ -1,7 +1,5 @@
 package com.riobener.sonicsoul.data.music
 
-import com.riobener.sonicsoul.data.music.spotify.Item
-
 fun Track.toTrackInfo() = TrackInfo(
     id = id,
     externalId = externalId,
@@ -9,7 +7,8 @@ fun Track.toTrackInfo() = TrackInfo(
     artist = artist,
     imageSource = imageSource,
     bigImageSource = imageSource,
-    trackSource = null,
+    onlineSource = null,
     isPlaying = false,
     localPath = localPath,
+    trackSource = source,
 )

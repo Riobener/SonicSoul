@@ -9,14 +9,19 @@ import androidx.lifecycle.viewModelScope
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.database.DatabaseProvider
+import com.google.android.exoplayer2.database.ExoDatabaseProvider
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
+import com.google.android.exoplayer2.upstream.DataSpec
+import com.google.android.exoplayer2.upstream.cache.*
 import com.riobener.sonicsoul.data.music.TrackInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,7 +29,8 @@ class PlayerViewModel @Inject constructor(
     @ApplicationContext applicationContext: Context,
     private val state: SavedStateHandle,
     private val exoPlayer: SimpleExoPlayer,
-    private val mediaSourceFactory: ProgressiveMediaSource.Factory
+    private val mediaSourceFactory: ProgressiveMediaSource.Factory,
+    private val databaseProvider: DatabaseProvider,
 ) : ViewModel() {
 
     private val _currentTrack: MutableStateFlow<TrackInfo?> = MutableStateFlow(null)
@@ -87,7 +93,7 @@ class PlayerViewModel @Inject constructor(
             while (true) {
                 Log.d("Player duration (ms): ", exoPlayer.currentPosition.toString())
                 _currentPosition.value = exoPlayer.currentPosition
-                delay(1000)
+                delay(100)
             }
         }
     }
@@ -116,7 +122,10 @@ class PlayerViewModel @Inject constructor(
 
     fun chooseAndPlayTrack(trackInfo: TrackInfo) {
         stopPlayback()
-        val index = playlist.value.indexOf(trackInfo)
+        var index = playlist.value.indexOfFirst {
+            (it.id == trackInfo.id && it.externalId == trackInfo .externalId)
+                    ||(it.title == trackInfo.title && it.artist == trackInfo.artist)
+        }
         if (index == currentTrackIndex && exoPlayer.isPlaying) {
             pause()
         } else if (index == currentTrackIndex && !exoPlayer.isPlaying) {
@@ -126,6 +135,7 @@ class PlayerViewModel @Inject constructor(
                 playlist.value[currentTrackIndex].isPlaying = false
             }
             currentTrackIndex = index
+
             val mediaSource = trackToMediaSource(playlist.value[currentTrackIndex])
             //TODO Gapless effect
             /*Thread.sleep(500)*/
@@ -174,7 +184,7 @@ class PlayerViewModel @Inject constructor(
     }
 
     fun setPlaylist(newplaylist: List<TrackInfo>) {
-        newplaylist.indexOfFirst { it.title == _currentTrack.value?.title && it.artist == _currentTrack.value?.artist }.let{
+        newplaylist.indexOfFirst { (it.id == _currentTrack.value?.id && it.externalId == _currentTrack.value?.externalId)||(it.title == _currentTrack.value?.title && it.artist == _currentTrack.value?.artist) }.let{
             currentTrackIndex = it
             if(currentTrackIndex != -1){
                 newplaylist[currentTrackIndex].isPlaying = _isPlaying.value
@@ -184,7 +194,7 @@ class PlayerViewModel @Inject constructor(
     }
 
     private fun trackToMediaSource(trackInfo: TrackInfo): MediaSource {
-        return trackInfo.trackSource?.let{
+        return trackInfo.onlineSource?.let{
             mediaSourceFactory.createMediaSource(Uri.parse(it))
         } ?: mediaSourceFactory.createMediaSource(Uri.parse(trackInfo.localPath))
     }

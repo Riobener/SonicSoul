@@ -11,8 +11,9 @@ data class TrackInfo(
     val artist: String,
     val imageSource: String?,
     val bigImageSource: String?,
-    val trackSource: String?,
-    val localPath: String?,
+    val onlineSource: String?,
+    val trackSource: TrackSource,
+    var localPath: String?,
     var isPlaying: Boolean,
 )
 

@@ -1,0 +1,12 @@
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/SaveSong"
+        android:title="@string/save_song"
+        />
+    <item
+        android:id="@+id/DeleteSong"
+        android:title="@string/delete_song"
+        />
+</menu>

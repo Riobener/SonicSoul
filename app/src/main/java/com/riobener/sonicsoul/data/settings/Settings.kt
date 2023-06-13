@@ -28,6 +28,7 @@ enum class SettingsName {
     LOCAL_DIRECTORY_PATH,
     IS_GAPLESS,
     THEME_APP,
+    LANGUAGE,
     //list of other settings...
 }
 

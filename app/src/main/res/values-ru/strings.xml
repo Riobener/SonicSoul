@@ -1,0 +1,39 @@
+<resources>
+    <string name="app_name">SonicSoul</string>
+    <string name="settings">Настройки</string>
+    <string name="login_exception">Ошибка авторизации</string>
+    <string name="music_load_exception">Ошибка загрузки музыки</string>
+    <string name="local_music">Локальная музыка</string>
+    <string name="online_music">Онлайн музыка</string>
+    <string name="need_authorize">Необходимо авторизоваться \n для доступа к онлайн музыке</string>
+    <string name="login_text">Войти</string>
+    <string name="setup_local_directory">Обзор</string>
+
+    <string name="delete_song">Удалить</string>
+    <string name="save_song">Сохранить</string>
+
+    <string name="navigation_drawer_close">Закрыть</string>
+    <string name="navigation_drawer_open">Открыть</string>
+
+    <string name="welcome_title">Добро пожаловать\n в приложение Sonic Soul!</string>
+    <string name="need_local_setup">В целях первичной настройки приложения, выберите папку, где расположена ваша локальная музыка</string>
+
+    <string name="settings_audio">Звук</string>
+    <string name="settings_storage">Хранилище</string>
+    <string name="settings_service">Онлайн сервис</string>
+    <string name="settings_visual">Оформление</string>
+
+
+    <string name="settings_enable_gapless">Включить gapless эффект</string>
+    <string name="settings_change_local_directory">Поменять путь к локальной музыке</string>
+    <string name="settings_change_visual">Поменять цветовую схему</string>
+    <string name="settings_change_eq">Поменять настройки эквалайзера</string>
+    <string name="settings_change_locale">Поменять язык</string>
+    <string name="settings_service_summary">Для доступа к музыке онлайн сервиса, авторизуйтесь на странице данного раздела</string>
+    <string name="settings_service_logout">Выйти из аккаунта</string>
+
+
+    <string name="settings_fragment">Настройки</string>
+    <string name="online_fragment">Онлайн музыка</string>
+    <string name="offline_fragment">Локальная музыка</string>
+</resources>

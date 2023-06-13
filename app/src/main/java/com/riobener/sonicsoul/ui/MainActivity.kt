@@ -2,6 +2,7 @@ package com.riobener.sonicsoul.ui
 
 import android.app.SearchManager
 import android.content.Context
+import android.content.ContextWrapper
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -24,9 +25,10 @@ import com.riobener.sonicsoul.ui.viewmodels.MusicViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_main.*
 import androidx.core.view.MenuItemCompat
-
-
-
+import com.riobener.sonicsoul.data.settings.SettingsName
+import com.riobener.sonicsoul.ui.viewmodels.SettingsViewModel
+import com.riobener.sonicsoul.utils.launchAndCollectIn
+import java.util.*
 
 
 @AndroidEntryPoint
@@ -47,7 +49,7 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
         binding.toolbar.setupWithNavController(controller, appBarConfiguration)
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main)
-        this.supportActionBar?.title = "Start Screen"
+        this.supportActionBar?.title = resources.getString(R.string.online_fragment)
         binding.navigationLayout.setNavigationItemSelectedListener {
             val currentFragment = navHostFragment?.childFragmentManager?.fragments?.get(0)
             when (it.itemId) {
@@ -120,7 +122,7 @@ class MainActivity : AppCompatActivity() {
             }
 
         })
-        menu.findItem(R.id.search).setOnActionExpandListener(object :MenuItem.OnActionExpandListener{
+        menu.findItem(R.id.search).setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
             override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
                 return true
             }
@@ -147,5 +149,4 @@ class MainActivity : AppCompatActivity() {
         else
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
     }
-
 }

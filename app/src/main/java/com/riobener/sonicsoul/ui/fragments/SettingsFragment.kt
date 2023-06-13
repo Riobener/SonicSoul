@@ -1,6 +1,7 @@
 package com.riobener.sonicsoul.ui.fragments
 
 import android.content.Intent
+import android.content.res.Resources
 import android.net.Uri
 import android.os.Bundle
 import android.provider.DocumentsContract
@@ -24,6 +25,7 @@ import com.riobener.sonicsoul.utils.launchAndCollectIn
 import android.media.audiofx.AudioEffect
 import com.riobener.sonicsoul.ui.MainActivity
 import kotlinx.android.synthetic.main.activity_main.*
+import java.util.*
 
 
 class SettingsFragment : PreferenceFragmentCompat() {
@@ -45,9 +47,9 @@ class SettingsFragment : PreferenceFragmentCompat() {
         setupSettings()
     }
 
-    fun setupFragmentScreen(){
+    fun setupFragmentScreen() {
         activity?.let {
-            (it as AppCompatActivity).supportActionBar?.title = "Settings"
+            (it as AppCompatActivity).supportActionBar?.title = resources.getString(R.string.settings_fragment)
             if (it.toolbar?.menu?.findItem(R.id.search) != null)
                 it.toolbar.menu.removeItem(R.id.search)
             if (it.toolbar?.menu?.findItem(R.id.sort) != null)
@@ -62,6 +64,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             val localStoragePref = findPreference<Preference>("local_storage")
             val themeAppPref = findPreference<SwitchPreferenceCompat>("theme_app")
             val servicePref = findPreference<Preference>("online_service")
+            val localePref = findPreference<Preference>("locale")
             settings.forEach { setting ->
                 when (setting.name) {
                     SettingsName.LOCAL_DIRECTORY_PATH -> {
@@ -88,6 +91,19 @@ class SettingsFragment : PreferenceFragmentCompat() {
                         }
                         themeAppPref?.isChecked = setting.value.toBooleanStrict()
                     }
+/*                    SettingsName.LANGUAGE -> {
+                        localePref?.summary =
+                            if (setting.value == "en") "Current language: English" else "Текущий язык: Русский"
+                        localePref?.setOnPreferenceClickListener {
+                            if (setting.value == "en") {
+                                setting.value = "ru"
+                            } else {
+                                setting.value = "en"
+                            }
+                            viewModel.saveSettings(setting)
+                            true
+                        }
+                    }*/
                 }
             }
             equalizerPref?.setOnPreferenceClickListener {
@@ -96,14 +112,14 @@ class SettingsFragment : PreferenceFragmentCompat() {
             }
             credentialsViewModel.serviceCredentialsFlow.launchAndCollectIn(viewLifecycleOwner) { serviceCredentials ->
                 if (serviceCredentials != null) {
-                    servicePref?.title = "Exit from account"
+                    servicePref?.title = resources.getString(R.string.settings_service_logout)
                     servicePref?.setOnPreferenceClickListener {
                         credentialsViewModel.cleanToken()
                         musicViewModel.needToReload = true
                         true
                     }
                 } else {
-                    servicePref?.title = "For service data, authorize in Online music screen"
+                    servicePref?.title = resources.getString(R.string.settings_service_summary)
                     servicePref?.setOnPreferenceClickListener {
                         true
                     }
@@ -145,5 +161,4 @@ class SettingsFragment : PreferenceFragmentCompat() {
         intent.addCategory(Intent.CATEGORY_DEFAULT)
         directorySetup.launch(intent)
     }
-
 }

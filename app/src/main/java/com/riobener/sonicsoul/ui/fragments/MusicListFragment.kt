@@ -58,9 +58,9 @@ class MusicListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         activity?.let {
             if (isOffline()) {
-                (it as AppCompatActivity).supportActionBar?.title = "Offline Music"
+                (it as AppCompatActivity).supportActionBar?.title = resources.getString(R.string.offline_fragment)
             } else {
-                (it as AppCompatActivity).supportActionBar?.title = "Online Music"
+                (it as AppCompatActivity).supportActionBar?.title = resources.getString(R.string.online_fragment)
             }
         }
         fragmentChanged = musicViewModel.isOffline != isOffline()

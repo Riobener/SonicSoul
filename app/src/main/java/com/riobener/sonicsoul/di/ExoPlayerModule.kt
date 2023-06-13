@@ -40,10 +40,9 @@ object ExoPlayerModule {
     }
 
     @Provides
-    fun provideMediaSourceFactory(dataSourceFactory: DataSource.Factory, provider: DatabaseProvider): ProgressiveMediaSource.Factory {
-        val cacheDirectory = "/storage/emulated/0/Download/Nelver - Heatwave EP (WAV + FLAC)/NewFolder"
+    fun provideMediaSourceFactory(@ApplicationContext context: Context, dataSourceFactory: DataSource.Factory, provider: DatabaseProvider): ProgressiveMediaSource.Factory {
         val maxCacheSize: Long = 100 * 1024 * 1024
-        val cache = SimpleCache(File(cacheDirectory), LeastRecentlyUsedCacheEvictor(maxCacheSize),provider)
+        val cache = SimpleCache(context.cacheDir, LeastRecentlyUsedCacheEvictor(maxCacheSize),provider)
         return ProgressiveMediaSource.Factory(
             cache.let {
                 CacheDataSourceFactory(

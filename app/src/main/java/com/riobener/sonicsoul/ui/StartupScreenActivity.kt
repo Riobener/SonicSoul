@@ -39,16 +39,23 @@ class StartupScreenActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = SplashScreenBinding.inflate(layoutInflater)
         viewModel.settings.launchAndCollectIn(this) { settings ->
-            settings.firstOrNull { it.name == SettingsName.LOCAL_DIRECTORY_PATH }?.let { local ->
-                musicViewModel.saveLocalMusicToDatabase(local.value)
-                settings.firstOrNull { it.name == SettingsName.THEME_APP }?.let {
-                    if (it.value == "true")
-                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                    else
-                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            if(settings.isEmpty()){
+                setContentView(binding.root)
+            }
+            settings.forEach { setting ->
+                when(setting.name){
+                    SettingsName.THEME_APP -> {
+                        if (setting.value == "true")
+                            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                        else
+                            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                    }
+                    SettingsName.LOCAL_DIRECTORY_PATH -> {
+                        musicViewModel.saveLocalMusicToDatabase(setting.value)
+                        goToMainActivity()
+                    }
                 }
-                goToMainActivity()
-            } ?: setContentView(binding.root)
+            }
         }
         binding.setupLocalDirectoryButton.setOnClickListener {
             checkPermissionsAndCallDirectorySetup(permissions = listOf(Manifest.permission.READ_EXTERNAL_STORAGE))
@@ -56,8 +63,8 @@ class StartupScreenActivity : AppCompatActivity() {
     }
 
     private fun goToMainActivity() {
-        musicViewModel.loadingFlow.launchAndCollectIn(this){ loadingState ->
-            if(!loadingState) {
+        musicViewModel.loadingFlow.launchAndCollectIn(this) { loadingState ->
+            if (!loadingState) {
                 val intent = Intent(this@StartupScreenActivity, MainActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
                 startActivity(intent)

@@ -2,9 +2,7 @@ package com.riobener.sonicsoul.ui
 
 import android.app.SearchManager
 import android.content.Context
-import android.content.ContextWrapper
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
@@ -24,11 +22,6 @@ import com.riobener.sonicsoul.ui.fragments.SettingsFragmentDirections
 import com.riobener.sonicsoul.ui.viewmodels.MusicViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_main.*
-import androidx.core.view.MenuItemCompat
-import com.riobener.sonicsoul.data.settings.SettingsName
-import com.riobener.sonicsoul.ui.viewmodels.SettingsViewModel
-import com.riobener.sonicsoul.utils.launchAndCollectIn
-import java.util.*
 
 
 @AndroidEntryPoint

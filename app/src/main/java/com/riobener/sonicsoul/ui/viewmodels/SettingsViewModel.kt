@@ -32,12 +32,6 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch {
             settingsRepository.save(
                 Settings.create(
-                    name = SettingsName.LOCAL_DIRECTORY_PATH,
-                    value = localPath,
-                )
-            )
-            settingsRepository.save(
-                Settings.create(
                     name = SettingsName.IS_GAPLESS,
                     value = false.toString(),
                 )
@@ -46,6 +40,12 @@ class SettingsViewModel @Inject constructor(
                 Settings.create(
                     name = SettingsName.THEME_APP,
                     value = true.toString(),
+                )
+            )
+            settingsRepository.save(
+                Settings.create(
+                    name = SettingsName.LOCAL_DIRECTORY_PATH,
+                    value = localPath,
                 )
             )
         }

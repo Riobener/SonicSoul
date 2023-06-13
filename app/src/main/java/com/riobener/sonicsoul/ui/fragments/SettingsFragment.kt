@@ -64,7 +64,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
             val localStoragePref = findPreference<Preference>("local_storage")
             val themeAppPref = findPreference<SwitchPreferenceCompat>("theme_app")
             val servicePref = findPreference<Preference>("online_service")
-            val localePref = findPreference<Preference>("locale")
             settings.forEach { setting ->
                 when (setting.name) {
                     SettingsName.LOCAL_DIRECTORY_PATH -> {
@@ -91,19 +90,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
                         }
                         themeAppPref?.isChecked = setting.value.toBooleanStrict()
                     }
-/*                    SettingsName.LANGUAGE -> {
-                        localePref?.summary =
-                            if (setting.value == "en") "Current language: English" else "Текущий язык: Русский"
-                        localePref?.setOnPreferenceClickListener {
-                            if (setting.value == "en") {
-                                setting.value = "ru"
-                            } else {
-                                setting.value = "en"
-                            }
-                            viewModel.saveSettings(setting)
-                            true
-                        }
-                    }*/
                 }
             }
             equalizerPref?.setOnPreferenceClickListener {

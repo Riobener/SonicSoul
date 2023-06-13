@@ -115,8 +115,8 @@ class MusicViewModel @Inject constructor(
                         title = trackInfo.title,
                         artist = trackInfo.artist,
                         source = trackInfo.trackSource,
-                        imageSource = trackInfo.imageSource,
-                        bigImageSource = trackInfo.bigImageSource,
+                        imageSource = null,
+                        bigImageSource = null,
                         localPath = it,
                         hash = HashUtils.hashStringWithSHA256(trackInfo.artist + trackInfo.title + trackInfo.externalId)
                     )
